@@ -11,6 +11,7 @@
     "lint": "eslint app components lib"
   },
   "dependencies": {
+    "@arc/design-system": "workspace:*",
     "@arc/engine-animation": "workspace:*",
     "@arc/engine-automata": "workspace:*",
     "@arc/engine-core": "workspace:*",

@@ -4,6 +4,7 @@ const nextConfig = {
   // Workspace engine packages ship compiled ESM in dist/, but transpiling them
   // here lets Next bundle them cleanly across the monorepo without prebuild order issues.
   transpilePackages: [
+    '@arc/design-system',
     '@arc/shared',
     '@arc/engine-core',
     '@arc/engine-automata',

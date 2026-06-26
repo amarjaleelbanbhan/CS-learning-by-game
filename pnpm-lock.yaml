@@ -44,6 +44,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@arc/design-system':
+        specifier: workspace:*
+        version: link:../../packages/design-system
       '@arc/engine-animation':
         specifier: workspace:*
         version: link:../../packages/engine-animation
@@ -99,6 +102,8 @@ importers:
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
+
+  packages/design-system: {}
 
   packages/engine-ai:
     dependencies:
@@ -202,8 +207,6 @@ importers:
         version: link:../shared
 
   packages/shared: {}
-
-  packages/ui: {}
 
   packages/viz: {}
 
