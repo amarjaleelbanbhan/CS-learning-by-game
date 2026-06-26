@@ -10,7 +10,13 @@ const MODULES = [
     ready: true,
   },
   { id: 'nfa', title: 'Many Paths at Once', tag: 'NFA', href: '#', ready: false },
-  { id: 'subset', title: 'NFA → DFA', tag: 'Flagship', href: '#', ready: false },
+  {
+    id: 'subset',
+    title: 'NFA → DFA',
+    tag: 'Flagship',
+    href: '/learn/nfa-to-dfa',
+    ready: true,
+  },
   { id: 'pumping', title: 'The Pumping Lemma', tag: 'Proofs', href: '#', ready: false },
 ];
 
