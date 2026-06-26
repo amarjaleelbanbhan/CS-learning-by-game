@@ -13,6 +13,8 @@
   "dependencies": {
     "@arc/design-system": "workspace:*",
     "@arc/engine-animation": "workspace:*",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.45.4",
     "@arc/engine-automata": "workspace:*",
     "@arc/engine-core": "workspace:*",
     "@arc/engine-simulation": "workspace:*",
