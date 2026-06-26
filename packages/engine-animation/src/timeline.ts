@@ -46,7 +46,10 @@ export function buildTimeline<TData>(
 }
 
 /** The frame visible at time `ms` (clamped to the timeline bounds). */
-export function frameAtTime<TData>(timeline: Timeline<TData>, ms: number): Frame<TData> | undefined {
+export function frameAtTime<TData>(
+  timeline: Timeline<TData>,
+  ms: number,
+): Frame<TData> | undefined {
   if (timeline.keyframes.length === 0) return undefined;
   const clamped = Math.max(0, Math.min(ms, timeline.durationMs));
   for (const kf of timeline.keyframes) {

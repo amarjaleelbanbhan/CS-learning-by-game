@@ -47,9 +47,7 @@ export function simulateDfa(dfa: DFA, input: string): Trace<DfaSimFrame> {
     const isLast = i === symbols.length - 1;
     steps.push({
       label:
-        current === null
-          ? `No transition on '${sym}' — rejected`
-          : `Read '${sym}' → ${current}`,
+        current === null ? `No transition on '${sym}' — rejected` : `Read '${sym}' → ${current}`,
       data: {
         position: i + 1,
         consumed,

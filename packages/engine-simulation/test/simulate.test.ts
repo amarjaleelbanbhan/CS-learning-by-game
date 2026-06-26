@@ -17,9 +17,27 @@ function endsIn01(): DFA {
   const q1 = stateId('q1');
   const q2 = stateId('q2');
   const delta = new Map<StateId, Map<string, StateId>>([
-    [q0, new Map([['0', q1], ['1', q0]])],
-    [q1, new Map([['0', q1], ['1', q2]])],
-    [q2, new Map([['0', q1], ['1', q0]])],
+    [
+      q0,
+      new Map([
+        ['0', q1],
+        ['1', q0],
+      ]),
+    ],
+    [
+      q1,
+      new Map([
+        ['0', q1],
+        ['1', q2],
+      ]),
+    ],
+    [
+      q2,
+      new Map([
+        ['0', q1],
+        ['1', q0],
+      ]),
+    ],
   ]);
   return { alphabet: ['0', '1'], states: [q0, q1, q2], start: q0, accepting: new Set([q2]), delta };
 }
