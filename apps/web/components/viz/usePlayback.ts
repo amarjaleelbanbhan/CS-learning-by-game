@@ -72,7 +72,9 @@ export function usePlayback<T>(trace: Trace<T>): Playback<T> {
   }, [isPlaying, timeline]);
 
   const index = indexAtTime(timeline, ms);
-  const atEnd = index >= total - 1 && ms >= timeline.durationMs - 1;
+  // Index-based so manual stepping (not just play-to-end) reaches "the end":
+  // this gates step-forward disabling, result banners, and mission completion.
+  const atEnd = index >= total - 1;
 
   const seekIndex = useCallback(
     (i: number) => {

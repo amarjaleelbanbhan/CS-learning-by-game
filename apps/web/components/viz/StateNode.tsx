@@ -22,7 +22,7 @@ export function StateNode({ data }: { data: StateNodeData }) {
       <motion.div
         animate={{ scale: data.isActive ? 1.1 : 1 }}
         transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-        className={`relative grid h-[60px] w-[60px] place-items-center rounded-full border-2 font-mono text-sm transition-colors duration-300 ${
+        className={`relative grid h-[60px] w-[60px] place-items-center rounded-full border-2 px-1 text-center font-mono transition-colors duration-300 ${
           data.isActive
             ? 'border-arc-cyan bg-arc-cyan/15 text-arc-cyan shadow-glow-strong'
             : 'border-ink-low/50 bg-elevated/70 text-ink-hi'
@@ -35,7 +35,9 @@ export function StateNode({ data }: { data: StateNodeData }) {
             }`}
           />
         )}
-        {data.label}
+        <span className={data.label.length > 3 ? 'text-[9px] leading-none' : 'text-sm'}>
+          {data.label}
+        </span>
       </motion.div>
 
       {/* Hidden handles satisfy React Flow; floating edges compute their own geometry. */}
