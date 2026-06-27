@@ -208,6 +208,9 @@ importers:
 
   packages/plugin-automata:
     dependencies:
+      '@arc/engine-game':
+        specifier: workspace:*
+        version: link:../engine-game
       '@arc/plugin-sdk':
         specifier: workspace:*
         version: link:../plugin-sdk
