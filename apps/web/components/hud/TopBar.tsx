@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { levelFromXp, useGameStore } from '@/components/state/gameStore';
+import { useSoundMuted } from '@/lib/fx/sound';
 import { ArcRing } from './ArcRing';
 import { useHasMounted } from './useHasMounted';
 
@@ -9,6 +10,7 @@ export function TopBar() {
   const mounted = useHasMounted();
   const xp = useGameStore((s) => s.xp);
   const coins = useGameStore((s) => s.coins);
+  const [muted, toggleMuted] = useSoundMuted();
   const { level, into, span } = levelFromXp(mounted ? xp : 0);
 
   return (
@@ -29,6 +31,13 @@ export function TopBar() {
         </Link>
 
         <div className="flex items-center gap-4">
+          <button
+            onClick={toggleMuted}
+            aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+            className="grid h-8 w-8 place-items-center rounded-full border border-ink-low/25 text-ink-mid transition-colors hover:border-arc-cyan/40 hover:text-ink-hi"
+          >
+            {muted ? '🔇' : '🔊'}
+          </button>
           <div className="hidden items-center gap-2 rounded-full border border-arc-gold/30 bg-arc-gold/5 px-3 py-1.5 sm:flex">
             <span className="text-arc-gold">◈</span>
             <span className="font-mono text-sm text-ink-hi">{mounted ? coins : 0}</span>

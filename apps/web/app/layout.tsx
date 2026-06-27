@@ -2,6 +2,10 @@ import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Orbitron } from 'next/font/google';
 import './globals.css';
 import { TopBar } from '@/components/hud/TopBar';
+import { ParticleField } from '@/components/fx/ParticleField';
+import { BootGate } from '@/components/boot/BootGate';
+import { Companion } from '@/components/companion/Companion';
+import { LevelUpWatcher } from '@/components/state/LevelUpWatcher';
 
 const display = Orbitron({
   subsets: ['latin'],
@@ -21,8 +25,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="min-h-screen">
-        <TopBar />
-        <main className="mx-auto w-full max-w-7xl px-4 pb-24 pt-6 sm:px-6">{children}</main>
+        <ParticleField />
+        <div className="relative z-10">
+          <TopBar />
+          <main className="mx-auto w-full max-w-7xl px-4 pb-24 pt-6 sm:px-6">{children}</main>
+        </div>
+        <Companion />
+        <LevelUpWatcher />
+        <BootGate />
       </body>
     </html>
   );
