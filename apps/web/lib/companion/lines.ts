@@ -11,7 +11,11 @@ export type CompanionEvent =
   | 'level-up'
   | 'streak'
   | 'accept'
-  | 'reject';
+  | 'reject'
+  | 'branch-spawn'
+  | 'branch-died'
+  | 'epsilon-used'
+  | 'nfa-accept';
 
 const BANK: Record<CompanionEvent, string[]> = {
   welcome: [
@@ -40,6 +44,22 @@ const BANK: Record<CompanionEvent, string[]> = {
   streak: ["Consistency is the real superpower here. Don't break the chain."],
   accept: ['Accepted. The machine found its way home.'],
   reject: ["Rejected — and that's data, not failure. Try tracing why."],
+  'branch-spawn': [
+    'Watch closely — the machine just split into two possibilities at once.',
+    "That's nondeterminism: every guess runs in parallel, for free.",
+  ],
+  'branch-died': [
+    'That branch just died — no transition existed for the symbol it read. A dead end, nothing more.',
+    'One thread is gone. Notice the others are still alive and still computing.',
+  ],
+  'epsilon-used': [
+    'An ε-transition just fired — the state changed instantly, and no input was consumed.',
+    'That jump was free. The tape pointer never moved.',
+  ],
+  'nfa-accept': [
+    'Only one branch needed to survive. That single thread is all it takes to accept.',
+    'Every other path could have failed — one accepting branch is enough.',
+  ],
 };
 
 export function pickLine(event: CompanionEvent, seed = Math.random()): string {

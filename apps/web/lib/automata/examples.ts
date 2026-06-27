@@ -1,5 +1,5 @@
 import { stateId, type StateId } from '@arc/shared';
-import type { DFA, NFA } from '@arc/engine-automata';
+import { EPSILON, type DFA, type NFA } from '@arc/engine-automata';
 
 export type Layout = Record<string, { x: number; y: number }>;
 
@@ -87,6 +87,58 @@ export function nfaEndsIn01View(): NfaView {
     layout: {
       q0: { x: 60, y: 150 },
       q1: { x: 300, y: 150 },
+      q2: { x: 540, y: 150 },
+    },
+  };
+}
+
+/**
+ * NFA over {a,b} accepting strings that contain "aa" as a substring.
+ * Purpose-built for the Quantum Branching Lab to honestly demonstrate all
+ * three signature visuals in one small machine:
+ *   - an ε-transition from the true start `qS` into `q0` (a "teleport" that
+ *     consumes no input — fires on frame 0, before any symbol is read);
+ *   - genuine branching: q0 forks into {q0, q1} on every 'a' (one thread
+ *     keeps searching, the other bets this 'a' begins "aa");
+ *   - a genuine, unambiguous death: q1 has NO transition on 'b' — that
+ *     thread truly has nowhere to go and disappears (not just relabeled);
+ *   - a sticky accepting state q2 that stays accepting for any suffix.
+ */
+export function containsAaView(): NfaView {
+  const qS = stateId('qS');
+  const q0 = stateId('q0');
+  const q1 = stateId('q1');
+  const q2 = stateId('q2');
+  const delta = new Map<StateId, Map<string, Set<StateId>>>([
+    [qS, new Map([[EPSILON, new Set([q0])]])],
+    [
+      q0,
+      new Map([
+        ['a', new Set([q0, q1])],
+        ['b', new Set([q0])],
+      ]),
+    ],
+    [q1, new Map([['a', new Set([q2])]])], // no 'b' transition — dies on 'b'
+    [
+      q2,
+      new Map([
+        ['a', new Set([q2])],
+        ['b', new Set([q2])],
+      ]),
+    ],
+  ]);
+  return {
+    nfa: {
+      alphabet: ['a', 'b'],
+      states: [qS, q0, q1, q2],
+      start: qS,
+      accepting: new Set([q2]),
+      delta,
+    },
+    layout: {
+      qS: { x: -180, y: 150 },
+      q0: { x: 60, y: 150 },
+      q1: { x: 300, y: 0 },
       q2: { x: 540, y: 150 },
     },
   };
