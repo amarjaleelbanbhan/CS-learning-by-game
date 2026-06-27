@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { simulateDfa } from '@arc/engine-simulation';
 import { useGameStore } from '@/components/state/gameStore';
+import { useCompanionStore } from '@/components/companion/companionStore';
+import { playSfx } from '@/lib/fx/sound';
 import { Panel } from '@/components/ui/Panel';
 import { HoloButton } from '@/components/ui/HoloButton';
 import { AutomatonGraph } from '@/components/viz/AutomatonGraph';
@@ -30,6 +32,7 @@ export function DfaMission() {
 
   const completed = useGameStore((s) => Boolean(s.completed[MISSION_ID]));
   const completeMission = useGameStore((s) => s.completeMission);
+  const say = useCompanionStore((s) => s.say);
 
   // Auto-play whenever a fresh run is submitted (skip the initial mount).
   const firstRun = useRef(true);
@@ -47,8 +50,20 @@ export function DfaMission() {
     if (pb.atEnd && trace.outcome === 'accept' && runString.length > 0 && !completed) {
       completeMission(MISSION_ID, 150, 50);
       setCelebrate(true);
+      playSfx('reward');
+      say('mission-complete');
     }
-  }, [pb.atEnd, trace.outcome, runString, completed, completeMission]);
+  }, [pb.atEnd, trace.outcome, runString, completed, completeMission, say]);
+
+  const showResult = hasRun && pb.index === pb.total - 1;
+  const accepted = trace.outcome === 'accept';
+
+  // One chime per result reveal — meaningful feedback, not spam.
+  useEffect(() => {
+    if (!showResult) return;
+    playSfx(accepted ? 'success' : 'error');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showResult]);
 
   const data = pb.frame?.data;
   const position = data?.position ?? 0;
@@ -58,9 +73,6 @@ export function DfaMission() {
     data?.justRead != null && prevState && data.currentState
       ? `${prevState}->${data.currentState}`
       : null;
-
-  const showResult = hasRun && pb.index === pb.total - 1;
-  const accepted = trace.outcome === 'accept';
 
   function run(value: string) {
     const cleaned = value.trim();

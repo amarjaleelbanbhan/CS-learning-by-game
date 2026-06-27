@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGameStore } from '@/components/state/gameStore';
+import { useCompanionStore } from '@/components/companion/companionStore';
+import { playSfx } from '@/lib/fx/sound';
 import { Panel } from '@/components/ui/Panel';
 import { HoloButton } from '@/components/ui/HoloButton';
 import { GraphView } from '@/components/viz/GraphView';
@@ -40,14 +42,17 @@ export function NfaToDfaLab() {
 
   const completed = useGameStore((s) => Boolean(s.completed[MISSION_ID]));
   const completeMission = useGameStore((s) => s.completeMission);
+  const say = useCompanionStore((s) => s.say);
   const [celebrate, setCelebrate] = useState(false);
 
   useEffect(() => {
     if (pb.atEnd && !completed) {
       completeMission(MISSION_ID, 250, 75);
       setCelebrate(true);
+      playSfx('reward');
+      say('flagship-complete');
     }
-  }, [pb.atEnd, completed, completeMission]);
+  }, [pb.atEnd, completed, completeMission, say]);
 
   const dfaActiveNodes = frame
     ? [frame.currentDfaNode, ...(frame.resultDfaNode ? [frame.resultDfaNode] : [])]
