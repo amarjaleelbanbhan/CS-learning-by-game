@@ -12,6 +12,7 @@ export type { ProductMode } from './algorithms/product.js';
 export { productDfa } from './algorithms/product.js';
 export { minimizeDfa } from './algorithms/minimize.js';
 export { areEquivalent } from './algorithms/equivalence.js';
+export { findDistinguishingString } from './algorithms/distinguish.js';
 
 export type { Re } from './regex/parse.js';
 export { parseRegex } from './regex/parse.js';

@@ -9,10 +9,18 @@ import { useUiStore } from '@/components/state/uiStore';
 const MODULES = [
   {
     id: 'dfa-ends-01',
-    title: 'The Memory of a Machine',
-    tag: 'DFA',
-    icon: '🔷',
+    title: 'Calibration',
+    tag: 'Tutorial',
+    icon: '⚙️',
     href: '/learn/dfa-ends-01',
+    ready: true,
+  },
+  {
+    id: 'build-dfa-security',
+    title: 'Perimeter Security',
+    tag: 'Mission 1',
+    icon: '🛡️',
+    href: '/learn/build-dfa-security',
     ready: true,
   },
   {
@@ -75,8 +83,8 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="mx-auto mt-5 max-w-xl text-ink-mid"
           >
-            No more static diagrams. Build machines, feed them strings, and watch computation happen
-            — step by step, at 60 frames per second.
+            No lectures. No definitions up front. You get an objective, a blank canvas, and a
+            machine that needs building — the theory catches up to you, not the other way around.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -85,10 +93,10 @@ export default function Home() {
             className="mt-8 flex justify-center gap-3"
           >
             <Link
-              href="/learn/dfa-ends-01"
+              href="/learn/build-dfa-security"
               className="rounded-xl border border-arc-cyan/50 bg-arc-cyan/15 px-6 py-3 font-medium tracking-wide text-arc-cyan shadow-glow transition-all hover:bg-arc-cyan/25"
             >
-              Start Mission 01 ▶
+              Take Your First Mission ▶
             </Link>
           </motion.div>
         </div>
