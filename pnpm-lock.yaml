@@ -59,6 +59,9 @@ importers:
       '@arc/engine-core':
         specifier: workspace:*
         version: link:../../packages/engine-core
+      '@arc/engine-game':
+        specifier: workspace:*
+        version: link:../../packages/engine-game
       '@arc/engine-simulation':
         specifier: workspace:*
         version: link:../../packages/engine-simulation
