@@ -1,6 +1,7 @@
 import type { Difficulty } from '@arc/plugin-sdk';
 import type { UnlockNode } from '@arc/engine-game';
 import type { QuestionTypeId } from './question-types.js';
+import type { QuestionFormatId } from './question-formats.js';
 
 export type MissionVariationTier =
   | 'easy'
@@ -23,8 +24,11 @@ export interface MissionVariation {
  *                           `apps/web/lib/campaign/academy.ts`. These entries exist so the
  *                           database is a complete map of the campaign, not just a backlog.
  *  - `status: 'designed'` — fully specified, content-complete, but NOT YET implemented as a
- *                           route/component. Building these is future work; per the
- *                           ingestion-phase directive, no new UI/gameplay is added in this pass.
+ *                           route/component.
+ *
+ * `versionScope` marks campaign-readiness independently of `status`: a 'v2-future' mission
+ * may already be fully designed (it isn't deleted — the design work is real and reusable)
+ * but is explicitly excluded from V1 campaign counts per PROMPT 04.6 Phase 9.
  *
  * All objectives/hints/prompts below are ORIGINAL — written for this game, never copied
  * verbatim from the Busch RPI slide decks or the Sukkur IBA assignment/exam in
@@ -34,6 +38,7 @@ export interface MissionVariation {
 export interface CurriculumMission {
   readonly id: string;
   readonly status: 'live' | 'designed';
+  readonly versionScope: 'v1' | 'v2-future';
   readonly world: string;
   readonly district: string;
   readonly difficulty: Difficulty;
@@ -50,7 +55,10 @@ export interface CurriculumMission {
   readonly achievements: readonly string[];
   readonly estimatedMinutes: number;
   readonly questionType: QuestionTypeId;
+  readonly format: QuestionFormatId;
   readonly originality: string;
+  /** District-capstone signal consumed by the difficulty model — see difficulty-model.ts. */
+  readonly isCapstone?: boolean;
   readonly variations?: readonly MissionVariation[];
 }
 
@@ -59,6 +67,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
   {
     id: 'toa.dfa-ends-01',
     status: 'live',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'security-district',
     difficulty: 1,
@@ -82,11 +91,13 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['First Contact'],
     estimatedMinutes: 4,
     questionType: 'string-membership',
+    format: 'prediction',
     originality: 'Existing live mission; documented here for completeness, not redesigned.',
   },
   {
     id: 'toa.build.dfa-ends-01',
     status: 'live',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'security-district',
     difficulty: 2,
@@ -111,11 +122,13 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Perimeter Engineer'],
     estimatedMinutes: 10,
     questionType: 'dfa-nfa-construction',
+    format: 'interactive-builder',
     originality: 'Existing live mission; documented here for completeness, not redesigned.',
   },
   {
     id: 'toa.nfa-branching',
     status: 'live',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'quantum-research-lab',
     difficulty: 2,
@@ -138,11 +151,13 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Quantum Observer'],
     estimatedMinutes: 8,
     questionType: 'string-membership',
+    format: 'simulation',
     originality: 'Existing live mission; documented here for completeness, not redesigned.',
   },
   {
     id: 'toa.nfa-to-dfa',
     status: 'live',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'research-archive',
     difficulty: 3,
@@ -162,6 +177,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Determinism Forged'],
     estimatedMinutes: 6,
     questionType: 'nfa-determinization',
+    format: 'conversion',
     originality: 'Existing live mission; documented here for completeness, not redesigned.',
   },
 
@@ -169,6 +185,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
   {
     id: 'toa.design.regex-construction-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'regex-workshop',
     difficulty: 2,
@@ -193,6 +210,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Pattern Whisperer'],
     estimatedMinutes: 12,
     questionType: 'regex-construction',
+    format: 'construction',
     originality:
       'Inspired by the structural pattern of binary-string regex batteries (common across the genre, and confirmed live in the Sukkur IBA "Construct Regular Expression" assignment) — properties and wording rewritten from scratch.',
     variations: [
@@ -224,6 +242,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
   {
     id: 'toa.design.regex-to-dfa-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'regex-workshop',
     difficulty: 4,
@@ -246,12 +265,14 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Reduction Specialist'],
     estimatedMinutes: 15,
     questionType: 'automaton-to-regex',
+    format: 'conversion',
     originality:
       'Original 4-5 state DFA designed for this mission; algorithm is the standard Busch-RPI state-elimination method, applied to new material.',
   },
   {
     id: 'toa.design.moore-mealy-01',
     status: 'designed',
+    versionScope: 'v2-future',
     world: 'Automata Academy',
     district: 'security-district',
     difficulty: 3,
@@ -275,12 +296,14 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Transducer Engineer'],
     estimatedMinutes: 12,
     questionType: 'moore-mealy-conversion',
+    format: 'conversion',
     originality:
       'Inspired by the binary-increment Moore→Mealy exercise pattern confirmed live in the Sukkur IBA exam (Q4); machine redesigned from scratch.',
   },
   {
     id: 'toa.design.nfa-determinize-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'quantum-research-lab',
     difficulty: 3,
@@ -304,12 +327,175 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Determinization Apprentice'],
     estimatedMinutes: 14,
     questionType: 'nfa-determinization',
+    format: 'completion',
     originality:
       'Teaching-focused companion to the existing toa.nfa-to-dfa spectacle: that mission shows the algorithm running; this one requires the player to execute it.',
   },
   {
+    id: 'toa.design.dfa-minimization-01',
+    status: 'designed',
+    versionScope: 'v1',
+    world: 'Automata Academy',
+    district: 'security-district',
+    difficulty: 3,
+    conceptId: 'dfa-minimization',
+    prerequisites: ['toa.build.dfa-ends-01'],
+    title: 'Trim the Fat',
+    objective:
+      'Given a correct but redundant 7-state DFA, minimize it to its unique smallest equivalent form.',
+    victoryCondition:
+      'Submitted DFA is language-equivalent to the original AND has the minimum possible number of states for that language.',
+    failureCondition:
+      'Merging two states that are actually distinguishable (some string drives them to different accept/reject outcomes).',
+    hints: [
+      'Two states are safe to merge only if EVERY possible future string treats them identically. Have you checked every symbol, not just one?',
+      'Start by separating accepting states from non-accepting ones — they can never merge with each other.',
+    ],
+    visualizationTrigger:
+      'Table-filling algorithm animation, unlocked after one failed minimization attempt.',
+    xpReward: 240,
+    creditsReward: 80,
+    achievements: ['Minimalist Engineer'],
+    estimatedMinutes: 14,
+    questionType: 'dfa-nfa-construction',
+    format: 'optimization',
+    originality:
+      'Original 7-state DFA designed for this mission; concept added to the universal curriculum per PROMPT 04.6 global research (confirmed standard via Stanford CS154), not present in the ingested Sukkur IBA material.',
+  },
+  {
+    id: 'toa.design.dfa-debug-01',
+    status: 'designed',
+    versionScope: 'v1',
+    world: 'Automata Academy',
+    district: 'security-district',
+    difficulty: 2,
+    conceptId: 'dfa-fundamentals',
+    prerequisites: ['toa.dfa-ends-01'],
+    title: 'Patch the Perimeter',
+    objective:
+      'Given a DFA that is almost correct for a stated language but has exactly one wrong transition, find and fix it.',
+    victoryCondition:
+      'The single incorrect transition is identified and corrected, and the resulting DFA is verified language-equivalent to the target.',
+    failureCondition:
+      'Changing a transition that was already correct, or missing the actual planted bug.',
+    hints: [
+      'Try a few short test strings by hand — which one gets the wrong verdict from this machine?',
+      'Once you have a failing string, which single transition did it cross that a correct machine would not have taken?',
+    ],
+    visualizationTrigger:
+      'Highlights the exact failing trace through the buggy machine after one failed diagnosis.',
+    xpReward: 190,
+    creditsReward: 55,
+    achievements: [],
+    estimatedMinutes: 9,
+    questionType: 'dfa-nfa-construction',
+    format: 'debugging',
+    originality:
+      'Original buggy DFA designed for this mission; format added per PROMPT 04.6 Phase 6 question-format expansion.',
+  },
+  {
+    id: 'toa.design.dfa-completion-01',
+    status: 'designed',
+    versionScope: 'v1',
+    world: 'Automata Academy',
+    district: 'security-district',
+    difficulty: 2,
+    conceptId: 'dfa-fundamentals',
+    prerequisites: ['toa.dfa-ends-01'],
+    title: 'Finish the Blueprint',
+    objective:
+      'Given a DFA transition table with several cells left blank, fill in the missing transitions so the machine matches the stated language.',
+    victoryCondition:
+      'Every blank cell is filled correctly and the completed machine is verified language-equivalent to the target.',
+    failureCondition:
+      'At least one filled-in transition does not match the language, even if the others are correct.',
+    hints: [
+      'For each blank cell, what state were you in, and what does adding that one symbol need to mean for the language?',
+      'Cross-check a completed row against a test string that is forced to pass through it.',
+    ],
+    visualizationTrigger:
+      'Highlights which blank cells are still inconsistent with the target language after a failed submission.',
+    xpReward: 170,
+    creditsReward: 50,
+    achievements: [],
+    estimatedMinutes: 8,
+    questionType: 'dfa-nfa-construction',
+    format: 'completion',
+    originality:
+      'Original partial transition table designed for this mission; format added per PROMPT 04.6 Phase 6 question-format expansion.',
+  },
+  {
+    id: 'toa.design.automaton-classification-daily',
+    status: 'designed',
+    versionScope: 'v1',
+    world: 'Automata Academy',
+    district: 'security-district',
+    difficulty: 2,
+    conceptId: 'nfa-fundamentals',
+    prerequisites: ['toa.nfa-branching'],
+    title: 'Daily Diagnostic',
+    objective:
+      'Complete a property table (start states, final states, edge labels, edges-per-state, determinism) across FA/NFA/Moore/Mealy by selecting from a fixed option bank per cell.',
+    victoryCondition: 'All table cells match the correct property for their automaton family.',
+    failureCondition: 'Any cell selects a property that does not hold for that automaton family.',
+    hints: [
+      'Which of these families is allowed to have zero start states, and which absolutely cannot?',
+      'Determinism and "exactly one transition per symbol" are the same idea stated two ways — which families satisfy it?',
+    ],
+    visualizationTrigger:
+      'Highlights the specific row that is wrong after a failed submission, never the correct value.',
+    xpReward: 120,
+    creditsReward: 40,
+    achievements: [],
+    estimatedMinutes: 6,
+    questionType: 'automaton-classification',
+    format: 'mcq',
+    originality:
+      "Directly inspired by the real Sukkur IBA exam's graded classification table (FA/TG/NFA/Moore/Mealy properties) flagged in the Phase 10 report of PROMPT 04.5 as an excellent recurring daily-mission template; option bank and table rebuilt from scratch as a reusable generator pattern rather than the original fixed table.",
+    variations: [
+      {
+        tier: 'daily',
+        prompt: 'A freshly shuffled property table each day, same five automaton families.',
+        xpReward: 120,
+      },
+      {
+        tier: 'infinite',
+        prompt: 'One row at a time, escalating speed, until the first wrong cell.',
+        xpReward: 30,
+      },
+    ],
+  },
+  {
+    id: 'toa.design.regex-precedence-mcq-01',
+    status: 'designed',
+    versionScope: 'v1',
+    world: 'Automata Academy',
+    district: 'regex-workshop',
+    difficulty: 1,
+    conceptId: 'regular-expressions',
+    prerequisites: ['toa.design.regex-construction-01'],
+    title: 'Order of Operations',
+    objective:
+      'For each of several short regular expressions, choose which of four candidate languages it actually denotes.',
+    victoryCondition: 'All multiple-choice selections match the correct denoted language.',
+    failureCondition:
+      'Any selection corresponds to a common precedence-confusion error (e.g. treating ab* as (ab)*).',
+    hints: ['If you removed the star right now, exactly which part of the expression disappears?'],
+    visualizationTrigger:
+      'Highlights exactly which sub-expression the star/plus operator scopes over, after a wrong answer.',
+    xpReward: 90,
+    creditsReward: 25,
+    achievements: [],
+    estimatedMinutes: 5,
+    questionType: 'regex-construction',
+    format: 'mcq',
+    originality:
+      'Built directly from the regex-precedence-confusion misconception entry in misconceptions.ts; all expressions and distractor options original.',
+  },
+  {
     id: 'toa.design.grammar-derivation-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'grammar-tower',
     difficulty: 2,
@@ -333,12 +519,14 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Tower Climber'],
     estimatedMinutes: 8,
     questionType: 'grammar-derivation',
+    format: 'construction',
     originality:
       'Original grammar and target string, structurally inspired by the recursive aSb/AB-style examples common to the genre.',
   },
   {
     id: 'toa.design.regular-grammar-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'grammar-tower',
     difficulty: 4,
@@ -361,12 +549,14 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Grammar Architect'],
     estimatedMinutes: 16,
     questionType: 'grammar-construction',
+    format: 'conversion',
     originality:
       'Original right-linear grammar, applying the standard Busch-RPI variable-as-state construction to new material.',
   },
   {
     id: 'toa.design.cfg-parse-tree-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'grammar-tower',
     difficulty: 3,
@@ -388,11 +578,13 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: [],
     estimatedMinutes: 12,
     questionType: 'parse-tree-construction',
+    format: 'construction',
     originality: 'Original grammar and target string.',
   },
   {
     id: 'toa.design.cfg-language-description-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'grammar-tower',
     difficulty: 3,
@@ -415,11 +607,13 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: [],
     estimatedMinutes: 10,
     questionType: 'grammar-language-description',
+    format: 'theory',
     originality: 'Original grammar.',
   },
   {
     id: 'toa.design.cfg-ambiguity-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'grammar-tower',
     difficulty: 4,
@@ -443,12 +637,53 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Ambiguity Hunter'],
     estimatedMinutes: 20,
     questionType: 'ambiguity-proof',
+    format: 'proof',
+    isCapstone: true,
     originality:
       'Inspired by the structural pattern of the ambiguity-proof exercises confirmed live in Assignment_1 (Q7–Q9); grammar rewritten from scratch — boss-tier, district-capstone mission.',
+    variations: [
+      {
+        tier: 'easy',
+        prompt: 'A 2-production grammar with one obviously ambiguous short string.',
+        xpReward: 200,
+      },
+      {
+        tier: 'medium',
+        prompt: 'A 3-production grammar requiring a length-4 witness string.',
+        xpReward: 350,
+      },
+      {
+        tier: 'hard',
+        prompt: 'A 4-production grammar where the shortest witness has length 5+.',
+        xpReward: 450,
+      },
+      {
+        tier: 'boss',
+        prompt: 'The Tower Boss grammar: ambiguity hidden behind a recursive self-reference.',
+        xpReward: 600,
+      },
+      {
+        tier: 'legend',
+        prompt:
+          'Prove ambiguity AND propose an equivalent unambiguous grammar for the same language.',
+        xpReward: 900,
+      },
+      {
+        tier: 'daily',
+        prompt: 'A freshly seeded small ambiguous grammar each day.',
+        xpReward: 250,
+      },
+      {
+        tier: 'infinite',
+        prompt: 'Escalating grammars until the first failed ambiguity proof.',
+        xpReward: 80,
+      },
+    ],
   },
   {
     id: 'toa.design.cfg-simplify-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'grammar-tower',
     difficulty: 4,
@@ -472,12 +707,14 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: [],
     estimatedMinutes: 15,
     questionType: 'grammar-simplification',
+    format: 'optimization',
     originality:
       'Inspired by the simplification exercise pattern confirmed live in Assignment_1 (Q10–Q11); grammar rewritten from scratch.',
   },
   {
     id: 'toa.design.cfg-cnf-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'grammar-tower',
     difficulty: 4,
@@ -501,12 +738,53 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Normal Form Master'],
     estimatedMinutes: 18,
     questionType: 'cnf-conversion',
+    format: 'conversion',
+    isCapstone: true,
     originality:
       'Inspired by the CNF-conversion exercise pattern confirmed live in Assignment_1 (Q12–Q13); grammar rewritten from scratch — boss-tier, district-capstone mission.',
+    variations: [
+      {
+        tier: 'easy',
+        prompt: 'A 3-production grammar needing only terminal substitution, no length-breaking.',
+        xpReward: 250,
+      },
+      {
+        tier: 'medium',
+        prompt: 'A 4-production grammar needing one length-breaking substitution.',
+        xpReward: 380,
+      },
+      {
+        tier: 'hard',
+        prompt: 'A grammar with a right side of length 4, needing chained substitutions.',
+        xpReward: 480,
+      },
+      {
+        tier: 'boss',
+        prompt: 'The Tower Boss grammar: mixed terminal/variable productions throughout.',
+        xpReward: 600,
+      },
+      {
+        tier: 'legend',
+        prompt:
+          'Convert to CNF AND report the exact number of new variables introduced, with justification.',
+        xpReward: 950,
+      },
+      {
+        tier: 'daily',
+        prompt: 'A freshly seeded grammar needing CNF conversion each day.',
+        xpReward: 280,
+      },
+      {
+        tier: 'infinite',
+        prompt: 'Escalating grammars until the first invalid CNF submission.',
+        xpReward: 90,
+      },
+    ],
   },
   {
     id: 'toa.design.pumping-lemma-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'pumping-dungeon',
     difficulty: 5,
@@ -530,6 +808,8 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Pumping Lemma Survivor', 'Academy Theorist'],
     estimatedMinutes: 25,
     questionType: 'regularity-proof',
+    format: 'proof',
+    isCapstone: true,
     originality:
       'Inspired by the regularity-proof exercise pattern confirmed live in Assignment_1 (Q1, Q15–Q17); language rewritten from scratch — legend-tier, district-capstone mission. The underlying lecture deck for this topic ("9 - Properties RL.ppt") could not be text-extracted; see docs/curriculum-ingestion-report.md.',
     variations: [
@@ -557,6 +837,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
   {
     id: 'toa.design.pda-construction-01',
     status: 'designed',
+    versionScope: 'v1',
     world: 'Automata Academy',
     district: 'stack-reactor',
     difficulty: 4,
@@ -580,6 +861,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
     achievements: ['Stack Reactor Online'],
     estimatedMinutes: 18,
     questionType: 'pda-construction',
+    format: 'construction',
     originality:
       'Inspired by the PDA-construction exercise pattern confirmed live in Assignment_1 (Q14); language rewritten from scratch. NOTE: no PDA lecture deck exists anywhere in the source material — this mission is fully designed ahead of the underlying lecture content; see docs/curriculum-ingestion-report.md for the gap.',
   },
@@ -604,4 +886,8 @@ export function liveMissions(): readonly CurriculumMission[] {
 
 export function designedMissions(): readonly CurriculumMission[] {
   return MISSIONS.filter((m) => m.status === 'designed');
+}
+
+export function v1Missions(): readonly CurriculumMission[] {
+  return MISSIONS.filter((m) => m.versionScope === 'v1');
 }
