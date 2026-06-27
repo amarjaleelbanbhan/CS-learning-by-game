@@ -50,6 +50,9 @@ importers:
       '@arc/engine-animation':
         specifier: workspace:*
         version: link:../../packages/engine-animation
+      '@arc/engine-assessment':
+        specifier: workspace:*
+        version: link:../../packages/engine-assessment
       '@arc/engine-automata':
         specifier: workspace:*
         version: link:../../packages/engine-automata
@@ -108,6 +111,9 @@ importers:
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.0)
 
   packages/design-system: {}
 

@@ -1,8 +1,12 @@
-/**
- * @arc/engine-assessment
- *
- * Problem model, answer-checking (incl. automata equivalence grading), scoring, hint-ladder model.
- *
- * Phase 2 scaffold — public API to be implemented in its dedicated phase.
- */
-export const PACKAGE_NAME = '@arc/engine-assessment' as const;
+export type {
+  QuestionType,
+  Topic,
+  Difficulty,
+  HintKind,
+  HintSpec,
+  Question,
+  GradeResult,
+} from './types.js';
+
+export { HINT_KIND_ORDER, unlockedHintTier, unlockedHintKind } from './hint-ladder.js';
+export { gradeDfaConstruction } from './dfa-grading.js';
