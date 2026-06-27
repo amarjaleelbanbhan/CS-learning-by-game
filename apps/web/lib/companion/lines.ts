@@ -30,7 +30,7 @@ const BANK: Record<CompanionEvent, string[]> = {
   ],
   'mission-complete': [
     'Clean run. That machine is exactly as smart as you built it to be.',
-    "Nice work, Recruit. You're starting to think like a machine.",
+    "Nice work, Engineer. You're starting to think like a machine.",
     "That's a wrap. Your understanding just leveled up, not just your XP.",
   ],
   'flagship-complete': [

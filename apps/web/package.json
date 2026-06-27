@@ -19,6 +19,7 @@
     "@arc/engine-assessment": "workspace:*",
     "@arc/engine-automata": "workspace:*",
     "@arc/engine-core": "workspace:*",
+    "@arc/engine-game": "workspace:*",
     "@arc/engine-simulation": "workspace:*",
     "@arc/shared": "workspace:*",
     "framer-motion": "^11.11.0",

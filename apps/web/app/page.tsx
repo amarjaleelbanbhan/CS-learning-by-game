@@ -2,45 +2,9 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Panel } from '@/components/ui/Panel';
 import { ReactorCore } from '@/components/fx/ReactorCore';
 import { useUiStore } from '@/components/state/uiStore';
-
-const MODULES = [
-  {
-    id: 'dfa-ends-01',
-    title: 'Calibration',
-    tag: 'Tutorial',
-    icon: '⚙️',
-    href: '/learn/dfa-ends-01',
-    ready: true,
-  },
-  {
-    id: 'build-dfa-security',
-    title: 'Perimeter Security',
-    tag: 'Mission 1',
-    icon: '🛡️',
-    href: '/learn/build-dfa-security',
-    ready: true,
-  },
-  {
-    id: 'nfa',
-    title: 'Many Paths at Once',
-    tag: 'NFA',
-    icon: '🌿',
-    href: '/learn/nfa-branching',
-    ready: true,
-  },
-  {
-    id: 'subset',
-    title: 'NFA → DFA',
-    tag: 'Flagship',
-    icon: '🌀',
-    href: '/learn/nfa-to-dfa',
-    ready: true,
-  },
-  { id: 'pumping', title: 'The Pumping Lemma', tag: 'Proofs', icon: '⚗️', href: '#', ready: false },
-];
+import { AcademyMap } from '@/components/campaign/AcademyMap';
 
 export default function Home() {
   const replayBoot = useUiStore((s) => s.replayBoot);
@@ -66,7 +30,7 @@ export default function Home() {
             className="mb-4 inline-flex items-center gap-2 rounded-full border border-arc-cyan/30 px-3 py-1 text-[11px] uppercase tracking-[0.3em] text-arc-cyan/80"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-arc-cyan animate-pulse-ring" />
-            Project Arc Reactor
+            Automata Academy
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
@@ -74,8 +38,8 @@ export default function Home() {
             transition={{ delay: 0.1 }}
             className="font-display text-4xl font-extrabold leading-tight text-glow sm:text-6xl"
           >
-            Theory of Automata,
-            <br /> as a living laboratory.
+            You&apos;re not a student here.
+            <br /> You&apos;re an engineer.
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
@@ -83,8 +47,8 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="mx-auto mt-5 max-w-xl text-ink-mid"
           >
-            No lectures. No definitions up front. You get an objective, a blank canvas, and a
-            machine that needs building — the theory catches up to you, not the other way around.
+            No lectures. No definitions up front. Every district hands you a broken system and a
+            blank canvas — the theory only shows up after you&apos;ve earned it.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -96,7 +60,7 @@ export default function Home() {
               href="/learn/build-dfa-security"
               className="rounded-xl border border-arc-cyan/50 bg-arc-cyan/15 px-6 py-3 font-medium tracking-wide text-arc-cyan shadow-glow transition-all hover:bg-arc-cyan/25"
             >
-              Take Your First Mission ▶
+              Enter the Academy ▶
             </Link>
           </motion.div>
         </div>
@@ -104,61 +68,9 @@ export default function Home() {
 
       <section>
         <h2 className="mb-4 font-display text-sm uppercase tracking-widest text-ink-mid">
-          Laboratory Map
+          Academy Districts
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {MODULES.map((m, i) => {
-            const card = (
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={m.ready ? { y: -6, scale: 1.02 } : undefined}
-                className="h-full"
-              >
-                <Panel
-                  className={`relative h-full overflow-hidden p-5 transition-shadow ${
-                    m.ready ? 'hover:shadow-glow-strong' : 'opacity-60'
-                  }`}
-                  glow={m.ready}
-                >
-                  {m.ready && (
-                    <motion.div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-arc-cyan/10 to-transparent"
-                      animate={{ x: ['-100%', '200%'] }}
-                      transition={{
-                        duration: 2.6,
-                        repeat: Infinity,
-                        repeatDelay: 3,
-                        ease: 'easeInOut',
-                      }}
-                    />
-                  )}
-                  <div className="relative">
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="rounded-md border border-arc-cyan/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-arc-cyan/80">
-                        {m.tag}
-                      </span>
-                      <span className="text-lg">{m.icon}</span>
-                    </div>
-                    <div className="font-display text-lg font-semibold text-ink-hi">{m.title}</div>
-                    <div className="mt-3 text-xs text-ink-low">
-                      {m.ready ? 'Available now →' : 'Locked · coming soon'}
-                    </div>
-                  </div>
-                </Panel>
-              </motion.div>
-            );
-            return m.ready ? (
-              <Link key={m.id} href={m.href}>
-                {card}
-              </Link>
-            ) : (
-              <div key={m.id}>{card}</div>
-            );
-          })}
-        </div>
+        <AcademyMap />
       </section>
 
       <footer className="text-center">
