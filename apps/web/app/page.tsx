@@ -15,7 +15,14 @@ const MODULES = [
     href: '/learn/dfa-ends-01',
     ready: true,
   },
-  { id: 'nfa', title: 'Many Paths at Once', tag: 'NFA', icon: '🌿', href: '#', ready: false },
+  {
+    id: 'nfa',
+    title: 'Many Paths at Once',
+    tag: 'NFA',
+    icon: '🌿',
+    href: '/learn/nfa-branching',
+    ready: true,
+  },
   {
     id: 'subset',
     title: 'NFA → DFA',

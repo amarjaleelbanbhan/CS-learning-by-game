@@ -2,7 +2,7 @@
 
 import type { Playback } from './usePlayback';
 
-const SPEEDS = [0.5, 1, 1.5, 2] as const;
+const SPEEDS = [0.25, 0.5, 1, 1.5, 2] as const;
 
 export function SimulationControls<T>({ pb }: { pb: Playback<T> }) {
   return (

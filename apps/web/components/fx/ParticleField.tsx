@@ -52,6 +52,18 @@ function buildSprites(): Record<Particle['hue'], OffscreenCanvas | HTMLCanvasEle
 }
 
 /**
+ * Internal render scale: drawing at less than full device resolution and
+ * letting CSS stretch the canvas cuts fill-rate cost roughly 3x for these
+ * soft, blurry sprites with no visible quality loss — important because this
+ * canvas covers the entire viewport and runs continuously behind everything
+ * else, including measurement-sensitive libraries like React Flow (a
+ * full-resolution redraw loop was once heavy enough to starve its
+ * ResizeObserver-based node measurement — see git history for the incident).
+ */
+const RESOLUTION_SCALE = 0.6;
+const MAX_PARTICLES = 40;
+
+/**
  * Ambient drifting-mote background (Canvas2D). Purely decorative — fixed
  * behind all content, never intercepts pointer events, pauses when the tab is
  * hidden, and renders nothing for prefers-reduced-motion (NFR-A11Y-1).
@@ -73,9 +85,9 @@ export function ParticleField() {
     let running = true;
 
     const resize = (): void => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      const count = Math.min(60, Math.round((canvas.width * canvas.height) / 26000));
+      canvas.width = Math.round(window.innerWidth * RESOLUTION_SCALE);
+      canvas.height = Math.round(window.innerHeight * RESOLUTION_SCALE);
+      const count = Math.min(MAX_PARTICLES, Math.round((canvas.width * canvas.height) / 14000));
       particles = Array.from({ length: count }, () => spawn(canvas.height));
     };
 
@@ -117,7 +129,12 @@ export function ParticleField() {
     };
 
     resize();
-    raf = requestAnimationFrame(tick);
+    // Defer the first real frame by one tick: starting the continuous redraw
+    // loop in the SAME pass as mount can collide with other libraries'
+    // post-mount measurement (ResizeObserver) work on the page.
+    raf = requestAnimationFrame(() => {
+      raf = requestAnimationFrame(tick);
+    });
     window.addEventListener('resize', resize);
     document.addEventListener('visibilitychange', onVisibility);
     return () => {
@@ -133,7 +150,7 @@ export function ParticleField() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 opacity-70"
+      className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-70"
     />
   );
 }
