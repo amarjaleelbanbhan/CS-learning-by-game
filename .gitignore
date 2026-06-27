@@ -19,3 +19,9 @@ out/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# Raw third-party course material (copyrighted lecture decks, a real university's exam/
+# assignment scans) used as ingestion input — never commit verbatim source, only the
+# original, derived content it produced (see packages/plugin-automata/src/curriculum/
+# and docs/curriculum-ingestion-report.md).
+docs/Knowladge/

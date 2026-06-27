@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@arc/shared": "workspace:*",
-    "@arc/plugin-sdk": "workspace:*"
+    "@arc/plugin-sdk": "workspace:*",
+    "@arc/engine-game": "workspace:*"
   }
 }
