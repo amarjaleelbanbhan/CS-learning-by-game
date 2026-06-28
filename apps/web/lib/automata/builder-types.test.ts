@@ -8,6 +8,7 @@ import {
   deleteState,
   emptyBuilderModel,
   moveState,
+  renameState,
   setStart,
   toggleAccepting,
   usedSymbolTargets,
@@ -214,5 +215,99 @@ describe('compileToDfa + grading integration', () => {
     const dfa = compileToDfa(m, ALPHABET);
     expect(accepts(dfa, '0')).toBe(false);
     expect(accepts(dfa, '')).toBe(false);
+  });
+});
+
+describe('renameState', () => {
+  it('renames a state and rewrites edges referencing it on both ends', () => {
+    let m = emptyBuilderModel();
+    m = addState(m); // q0
+    m = addState(m); // q1
+    m = addOrExtendEdge(m, 'q0', 'q1', '0');
+    m = addOrExtendEdge(m, 'q1', 'q1', '1');
+
+    const { model, error } = renameState(m, 'q0', 'q0,q1');
+    expect(error).toBeNull();
+    expect(model.states.map((s) => s.id)).toEqual(['q0,q1', 'q1']);
+    expect(model.edges).toEqual([
+      { id: 'q0,q1->q1', from: 'q0,q1', to: 'q1', symbols: ['0'] },
+      { id: 'q1->q1', from: 'q1', to: 'q1', symbols: ['1'] },
+    ]);
+  });
+
+  it('preserves start/accepting flags across a rename', () => {
+    let m = emptyBuilderModel();
+    m = addState(m); // q0, auto-start
+    m = toggleAccepting(m, 'q0');
+    const { model } = renameState(m, 'q0', 'renamed');
+    expect(model.states[0]).toMatchObject({ id: 'renamed', isStart: true, isAccepting: true });
+  });
+
+  it('rejects an empty name', () => {
+    const m = addState(emptyBuilderModel());
+    const { model, error } = renameState(m, 'q0', '   ');
+    expect(error).toBe('State name cannot be empty.');
+    expect(model.states[0]!.id).toBe('q0'); // unchanged
+  });
+
+  it('rejects renaming to a name another state already has', () => {
+    let m = emptyBuilderModel();
+    m = addState(m); // q0
+    m = addState(m); // q1
+    const { error } = renameState(m, 'q0', 'q1');
+    expect(error).toBe('A state named "q1" already exists.');
+  });
+
+  it('renaming to the same (trimmed) name is a no-op, not an error', () => {
+    const m = addState(emptyBuilderModel());
+    const { model, error } = renameState(m, 'q0', '  q0  ');
+    expect(error).toBeNull();
+    expect(model).toBe(m); // identical reference — truly a no-op
+  });
+
+  it('rewrites a self-loop to use the new id on both ends without duplicating it', () => {
+    let m = emptyBuilderModel();
+    m = addState(m); // q0
+    m = addOrExtendEdge(m, 'q0', 'q0', '0'); // self-loop
+    m = addOrExtendEdge(m, 'q0', 'q0', '1'); // extends the same self-loop edge
+
+    const { model, error } = renameState(m, 'q0', 'q0,q1');
+    expect(error).toBeNull();
+    expect(model.edges).toHaveLength(1);
+    expect(model.edges[0]).toMatchObject({ id: 'q0,q1->q0,q1', from: 'q0,q1', to: 'q0,q1' });
+    expect(new Set(model.edges[0]!.symbols)).toEqual(new Set(['0', '1']));
+  });
+
+  it('leaves edges untouched when neither endpoint is the renamed state', () => {
+    let m = emptyBuilderModel();
+    m = addState(m); // q0
+    m = addState(m); // q1
+    m = addState(m); // q2
+    m = addOrExtendEdge(m, 'q1', 'q2', '0');
+
+    const { model } = renameState(m, 'q0', 'renamed');
+    expect(model.edges).toEqual(m.edges);
+  });
+
+  it('grading by language equivalence works regardless of subset-style state labels', () => {
+    let m = emptyBuilderModel();
+    m = addState(m); // q0
+    m = addState(m); // q1
+    m = addState(m); // q2
+    m = toggleAccepting(m, 'q2');
+    m = addOrExtendEdge(m, 'q0', 'q0', '1');
+    m = addOrExtendEdge(m, 'q0', 'q1', '0');
+    m = addOrExtendEdge(m, 'q1', 'q1', '0');
+    m = addOrExtendEdge(m, 'q1', 'q2', '1');
+    m = addOrExtendEdge(m, 'q2', 'q0', '1');
+    m = addOrExtendEdge(m, 'q2', 'q1', '0');
+
+    let renamed = renameState(m, 'q0', 'q0').model;
+    renamed = renameState(renamed, 'q1', 'q0,q1').model;
+    renamed = renameState(renamed, 'q2', 'q0,q1,q2').model;
+
+    const a = compileToDfa(renamed, ALPHABET);
+    const b = compileToDfa(m, ALPHABET);
+    expect(areEquivalent(a, b)).toBe(true);
   });
 });

@@ -163,3 +163,39 @@ export function addOrExtendEdge(
 export function moveState(model: BuilderModel, id: string, x: number, y: number): BuilderModel {
   return { ...model, states: model.states.map((s) => (s.id === id ? { ...s, x, y } : s)) };
 }
+
+export interface RenameResult {
+  model: BuilderModel;
+  error: string | null;
+}
+
+/**
+ * Renames a state, rewriting every edge endpoint that referenced it. Needed for
+ * subset-construction missions where the player labels DFA states as subsets of NFA
+ * states (e.g. "q0,q1") rather than accepting the default q0/q1/q2 labels. The
+ * uniqueness check above guarantees `newId` doesn't collide with any OTHER existing
+ * state, so the rewritten edges' (from, to) pairs stay unique too — no merge logic needed.
+ */
+export function renameState(model: BuilderModel, oldId: string, newId: string): RenameResult {
+  const trimmed = newId.trim();
+  if (trimmed.length === 0) {
+    return { model, error: 'State name cannot be empty.' };
+  }
+  if (trimmed !== oldId && model.states.some((s) => s.id === trimmed)) {
+    return { model, error: `A state named "${trimmed}" already exists.` };
+  }
+  if (trimmed === oldId) {
+    return { model, error: null };
+  }
+
+  const states = model.states.map((s) => (s.id === oldId ? { ...s, id: trimmed } : s));
+  const edges = model.edges.map((e) => {
+    const from = e.from === oldId ? trimmed : e.from;
+    const to = e.to === oldId ? trimmed : e.to;
+    return from === e.from && to === e.to
+      ? e
+      : { id: `${from}->${to}`, from, to, symbols: e.symbols };
+  });
+
+  return { model: { states, edges }, error: null };
+}
