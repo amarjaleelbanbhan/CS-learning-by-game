@@ -31,6 +31,12 @@ export function TopBar() {
         </Link>
 
         <div className="flex items-center gap-4">
+          <Link
+            href="/career"
+            className="hidden text-xs uppercase tracking-wider text-ink-mid transition-colors hover:text-arc-cyan sm:inline"
+          >
+            Engineer Console
+          </Link>
           <button
             onClick={toggleMuted}
             aria-label={muted ? 'Unmute sound' : 'Mute sound'}

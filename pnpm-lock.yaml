@@ -47,6 +47,9 @@ importers:
       '@arc/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
+      '@arc/engine-analytics':
+        specifier: workspace:*
+        version: link:../../packages/engine-analytics
       '@arc/engine-animation':
         specifier: workspace:*
         version: link:../../packages/engine-animation
@@ -62,9 +65,15 @@ importers:
       '@arc/engine-game':
         specifier: workspace:*
         version: link:../../packages/engine-game
+      '@arc/engine-progress':
+        specifier: workspace:*
+        version: link:../../packages/engine-progress
       '@arc/engine-simulation':
         specifier: workspace:*
         version: link:../../packages/engine-simulation
+      '@arc/plugin-automata':
+        specifier: workspace:*
+        version: link:../../packages/plugin-automata
       '@arc/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -211,6 +220,9 @@ importers:
       '@arc/engine-game':
         specifier: workspace:*
         version: link:../engine-game
+      '@arc/engine-progress':
+        specifier: workspace:*
+        version: link:../engine-progress
       '@arc/plugin-sdk':
         specifier: workspace:*
         version: link:../plugin-sdk
