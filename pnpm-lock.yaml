@@ -131,6 +131,12 @@ importers:
 
   packages/engine-ai:
     dependencies:
+      '@arc/engine-analytics':
+        specifier: workspace:*
+        version: link:../engine-analytics
+      '@arc/engine-progress':
+        specifier: workspace:*
+        version: link:../engine-progress
       '@arc/shared':
         specifier: workspace:*
         version: link:../shared

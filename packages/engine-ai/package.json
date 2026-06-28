@@ -18,6 +18,8 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@arc/shared": "workspace:*"
+    "@arc/shared": "workspace:*",
+    "@arc/engine-analytics": "workspace:*",
+    "@arc/engine-progress": "workspace:*"
   }
 }
