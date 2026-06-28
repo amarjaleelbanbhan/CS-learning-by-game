@@ -9,7 +9,12 @@
 export const PACKAGE_NAME = '@arc/engine-world' as const;
 
 export type { NpcDefinition, RelationshipTier, NpcMemory } from './npc.js';
-export { RELATIONSHIP_TIERS, relationshipTierFor, EMPTY_NPC_MEMORY, recordConversation } from './npc.js';
+export {
+  RELATIONSHIP_TIERS,
+  relationshipTierFor,
+  EMPTY_NPC_MEMORY,
+  recordConversation,
+} from './npc.js';
 
 export type { WorldUnlockCondition, WorldUnlockContext, WorldUnlockable } from './unlocks.js';
 export { worldConditionMet, evaluateWorldUnlocks } from './unlocks.js';

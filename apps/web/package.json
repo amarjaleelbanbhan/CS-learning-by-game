@@ -24,6 +24,7 @@
     "@arc/engine-game": "workspace:*",
     "@arc/engine-progress": "workspace:*",
     "@arc/engine-simulation": "workspace:*",
+    "@arc/engine-world": "workspace:*",
     "@arc/plugin-automata": "workspace:*",
     "@arc/shared": "workspace:*",
     "framer-motion": "^11.11.0",

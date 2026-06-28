@@ -133,20 +133,24 @@ describe('dynamic dialogue selection', () => {
 
   it('returns null when nothing is eligible', () => {
     const gated: readonly DialogueLine[] = [{ id: 'locked', text: 'X', minRankOrder: 99 }];
-    expect(selectDialogueLine(gated, {
-      rankOrder: 0,
-      relationshipScore: 0,
-      activeWorldEventId: null,
-      memory: EMPTY_NPC_MEMORY,
-      seed: 0,
-    })).toBeNull();
-    expect(eligibleLines(gated, {
-      rankOrder: 0,
-      relationshipScore: 0,
-      activeWorldEventId: null,
-      memory: EMPTY_NPC_MEMORY,
-      seed: 0,
-    })).toHaveLength(0);
+    expect(
+      selectDialogueLine(gated, {
+        rankOrder: 0,
+        relationshipScore: 0,
+        activeWorldEventId: null,
+        memory: EMPTY_NPC_MEMORY,
+        seed: 0,
+      }),
+    ).toBeNull();
+    expect(
+      eligibleLines(gated, {
+        rankOrder: 0,
+        relationshipScore: 0,
+        activeWorldEventId: null,
+        memory: EMPTY_NPC_MEMORY,
+        seed: 0,
+      }),
+    ).toHaveLength(0);
   });
 
   it('is a deterministic pure function: same inputs produce the same output', () => {
@@ -235,7 +239,12 @@ describe('world event rotation', () => {
 // Department personality + time of day
 // ---------------------------------------------------------------------------
 const PERSONALITIES: readonly DepartmentPersonality[] = [
-  { districtId: 'security-district', mood: ['clean', 'precise'], motif: 'scanning drones', intensity: 'calm' },
+  {
+    districtId: 'security-district',
+    mood: ['clean', 'precise'],
+    motif: 'scanning drones',
+    intensity: 'calm',
+  },
 ];
 
 describe('department personality', () => {
@@ -290,7 +299,10 @@ const UNLOCKABLES: readonly WorldUnlockable[] = [
   { id: 'always', unlockCondition: {} },
   { id: 'rank-gated', unlockCondition: { minRankOrder: 3 } },
   { id: 'cert-gated', unlockCondition: { requiredCertifications: ['cert-dfa-engineer'] } },
-  { id: 'rep-gated', unlockCondition: { requiredDepartmentReputation: { 'security-district': 50 } } },
+  {
+    id: 'rep-gated',
+    unlockCondition: { requiredDepartmentReputation: { 'security-district': 50 } },
+  },
   { id: 'boss-gated', unlockCondition: { requiredBossVictories: ['toa.design.cfg-cnf-01'] } },
 ];
 

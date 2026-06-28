@@ -9,6 +9,8 @@ import { LevelUpWatcher } from '@/components/state/LevelUpWatcher';
 import { CareerSyncWatcher } from '@/components/state/CareerSyncWatcher';
 import { PromotionCeremony } from '@/components/state/PromotionCeremony';
 import { MentorWatcher } from '@/components/state/MentorWatcher';
+import { WorldSyncWatcher } from '@/components/state/WorldSyncWatcher';
+import { TimeOfDayOverlay } from '@/components/world/TimeOfDayOverlay';
 
 const display = Orbitron({
   subsets: ['latin'],
@@ -29,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="min-h-screen">
         <ParticleField />
+        <TimeOfDayOverlay />
         <div className="relative z-10">
           <TopBar />
           <main className="mx-auto w-full max-w-7xl px-4 pb-24 pt-6 sm:px-6">{children}</main>
@@ -38,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CareerSyncWatcher />
         <PromotionCeremony />
         <MentorWatcher />
+        <WorldSyncWatcher />
         <BootGate />
       </body>
     </html>

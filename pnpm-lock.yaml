@@ -74,6 +74,9 @@ importers:
       '@arc/engine-simulation':
         specifier: workspace:*
         version: link:../../packages/engine-simulation
+      '@arc/engine-world':
+        specifier: workspace:*
+        version: link:../../packages/engine-world
       '@arc/plugin-automata':
         specifier: workspace:*
         version: link:../../packages/plugin-automata

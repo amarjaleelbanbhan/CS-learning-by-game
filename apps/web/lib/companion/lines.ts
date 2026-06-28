@@ -18,7 +18,9 @@ export type CompanionEvent =
   | 'nfa-accept'
   | 'promotion'
   | 'certification-earned'
-  | 'blueprint-unlocked';
+  | 'blueprint-unlocked'
+  | 'boss-victory'
+  | 'world-event';
 
 const BANK: Record<CompanionEvent, string[]> = {
   welcome: [
@@ -74,6 +76,14 @@ const BANK: Record<CompanionEvent, string[]> = {
   'blueprint-unlocked': [
     'New blueprint in your vault. Go take a look — you earned that one.',
     'Schematics unlocked. Some of those took real mastery to reach.',
+  ],
+  'boss-victory': [
+    'Word travels fast in a place like this. They know what you did.',
+    "That win is already on the Academy's records. Earned, not handed to you.",
+  ],
+  'world-event': [
+    'Something is stirring across the Academy.',
+    'The campus is buzzing about this one.',
   ],
 };
 

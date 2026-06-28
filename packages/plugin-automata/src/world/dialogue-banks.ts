@@ -41,7 +41,11 @@ export const DIALOGUE_BANKS: Readonly<Record<string, readonly DialogueLine[]>> =
   ],
   'maintenance-drone': [
     { id: 'drone-beep', text: '*chirps and continues polishing a console*' },
-    { id: 'drone-acknowledge', text: '*beeps in recognition as you pass*', minRelationshipScore: 10 },
+    {
+      id: 'drone-acknowledge',
+      text: '*beeps in recognition as you pass*',
+      minRelationshipScore: 10,
+    },
   ],
   'professor-kleene': [
     {
@@ -60,7 +64,10 @@ export const DIALOGUE_BANKS: Readonly<Record<string, readonly DialogueLine[]>> =
     },
   ],
   'quantum-scientist': [
-    { id: 'voss-welcome', text: "Dr. Voss. I've seen your traces — promising branching discipline." },
+    {
+      id: 'voss-welcome',
+      text: "Dr. Voss. I've seen your traces — promising branching discipline.",
+    },
     {
       id: 'voss-hero',
       text: 'The department speaks of you, Engineer. Quantum work suits you.',

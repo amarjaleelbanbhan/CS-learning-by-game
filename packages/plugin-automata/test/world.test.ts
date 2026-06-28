@@ -8,6 +8,7 @@ import { RANK_LADDER } from '../src/career/index.js';
 import {
   DEPARTMENT_PERSONALITIES,
   DIALOGUE_BANKS,
+  LAB_DECORATIONS,
   NPCS,
   WORLD_EVENTS,
   dialogueFor,
@@ -150,7 +151,10 @@ describe('world: events', () => {
 
   it('every district has at least one event', () => {
     for (const districtId of DISTRICT_IDS) {
-      expect(WORLD_EVENTS.some((e) => e.districtId === districtId), districtId).toBe(true);
+      expect(
+        WORLD_EVENTS.some((e) => e.districtId === districtId),
+        districtId,
+      ).toBe(true);
     }
   });
 
@@ -176,5 +180,26 @@ describe('world: department personality', () => {
       expect(p.mood.length, p.districtId).toBeGreaterThan(0);
       expect(p.motif.length, p.districtId).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('world: laboratory decorations', () => {
+  it('every one of the 5 lab tiers has at least one decoration', () => {
+    for (let tier = 1; tier <= 5; tier += 1) {
+      expect(
+        LAB_DECORATIONS.some((d) => d.labTier === tier),
+        `tier ${tier}`,
+      ).toBe(true);
+    }
+  });
+
+  it('tier 1 decorations are always unlocked (no gate)', () => {
+    const tier1 = LAB_DECORATIONS.filter((d) => d.labTier === 1);
+    for (const d of tier1) expect(d.unlockCondition).toEqual({});
+  });
+
+  it('decoration ids are unique', () => {
+    const ids = LAB_DECORATIONS.map((d) => d.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });
