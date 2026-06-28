@@ -224,6 +224,12 @@ importers:
         specifier: workspace:*
         version: link:../shared
 
+  packages/engine-world:
+    dependencies:
+      '@arc/shared':
+        specifier: workspace:*
+        version: link:../shared
+
   packages/plugin-automata:
     dependencies:
       '@arc/engine-game':
