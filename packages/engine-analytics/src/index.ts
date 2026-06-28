@@ -1,8 +1,9 @@
 /**
  * @arc/engine-analytics
  *
- * Aggregation of events into learning metrics.
- *
- * Phase 2 scaffold — public API to be implemented in its dedicated phase.
+ * Aggregation of events into learning metrics. Currently: Player Statistics
+ * (mission attempt log -> totals, accuracy, streaks, weakest/most-improved topic).
  */
 export const PACKAGE_NAME = '@arc/engine-analytics' as const;
+
+export * from './statistics.js';
