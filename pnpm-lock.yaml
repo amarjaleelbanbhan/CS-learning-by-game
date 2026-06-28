@@ -47,6 +47,9 @@ importers:
       '@arc/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
+      '@arc/engine-ai':
+        specifier: workspace:*
+        version: link:../../packages/engine-ai
       '@arc/engine-analytics':
         specifier: workspace:*
         version: link:../../packages/engine-analytics

@@ -2,8 +2,8 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCompanionStore } from './companionStore';
-import { pickLine } from '@/lib/companion/lines';
 import { useHasMounted } from '@/components/hud/useHasMounted';
+import { ariaIdle } from '@/lib/companion/mentorActions';
 
 /**
  * ARIA — the AI companion presence. Not a chatbot window: a persistent,
@@ -13,7 +13,7 @@ import { useHasMounted } from '@/components/hud/useHasMounted';
  */
 export function Companion() {
   const mounted = useHasMounted();
-  const { message, visible, say, dismiss } = useCompanionStore();
+  const { message, visible, dismiss } = useCompanionStore();
 
   if (!mounted) return null;
 
@@ -46,7 +46,7 @@ export function Companion() {
       <motion.button
         type="button"
         aria-label="ARIA, your AI companion"
-        onClick={() => say('idle', pickLine('idle'))}
+        onClick={() => ariaIdle()}
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         whileHover={{ scale: 1.08 }}

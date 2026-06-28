@@ -18,6 +18,7 @@
     "@supabase/supabase-js": "^2.45.4",
     "@arc/engine-assessment": "workspace:*",
     "@arc/engine-automata": "workspace:*",
+    "@arc/engine-ai": "workspace:*",
     "@arc/engine-analytics": "workspace:*",
     "@arc/engine-core": "workspace:*",
     "@arc/engine-game": "workspace:*",

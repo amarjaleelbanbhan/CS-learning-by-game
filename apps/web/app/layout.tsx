@@ -8,6 +8,7 @@ import { Companion } from '@/components/companion/Companion';
 import { LevelUpWatcher } from '@/components/state/LevelUpWatcher';
 import { CareerSyncWatcher } from '@/components/state/CareerSyncWatcher';
 import { PromotionCeremony } from '@/components/state/PromotionCeremony';
+import { MentorWatcher } from '@/components/state/MentorWatcher';
 
 const display = Orbitron({
   subsets: ['latin'],
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LevelUpWatcher />
         <CareerSyncWatcher />
         <PromotionCeremony />
+        <MentorWatcher />
         <BootGate />
       </body>
     </html>

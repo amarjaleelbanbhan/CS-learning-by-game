@@ -41,8 +41,7 @@ export function nextSocraticStep(
   const alreadyShown = socraticStep(memory, misconception.id);
   // 'stuck' is allowed to jump straight to the most concrete hint already; otherwise we
   // reveal strictly in order, one rung per struggle.
-  const targetRung =
-    struggle === 'stuck' ? Math.max(alreadyShown, questions.length) : alreadyShown;
+  const targetRung = struggle === 'stuck' ? Math.max(alreadyShown, questions.length) : alreadyShown;
   const rung = Math.min(targetRung, Math.max(ladderLength - 1, 0));
 
   const exhausted = rung >= ladderLength - 1;
