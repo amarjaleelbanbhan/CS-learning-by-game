@@ -6,6 +6,8 @@ import { ParticleField } from '@/components/fx/ParticleField';
 import { BootGate } from '@/components/boot/BootGate';
 import { Companion } from '@/components/companion/Companion';
 import { LevelUpWatcher } from '@/components/state/LevelUpWatcher';
+import { CareerSyncWatcher } from '@/components/state/CareerSyncWatcher';
+import { PromotionCeremony } from '@/components/state/PromotionCeremony';
 
 const display = Orbitron({
   subsets: ['latin'],
@@ -32,6 +34,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <Companion />
         <LevelUpWatcher />
+        <CareerSyncWatcher />
+        <PromotionCeremony />
         <BootGate />
       </body>
     </html>

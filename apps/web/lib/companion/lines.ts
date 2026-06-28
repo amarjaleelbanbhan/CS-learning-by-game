@@ -15,7 +15,10 @@ export type CompanionEvent =
   | 'branch-spawn'
   | 'branch-died'
   | 'epsilon-used'
-  | 'nfa-accept';
+  | 'nfa-accept'
+  | 'promotion'
+  | 'certification-earned'
+  | 'blueprint-unlocked';
 
 const BANK: Record<CompanionEvent, string[]> = {
   welcome: [
@@ -59,6 +62,18 @@ const BANK: Record<CompanionEvent, string[]> = {
   'nfa-accept': [
     'Only one branch needed to survive. That single thread is all it takes to accept.',
     'Every other path could have failed — one accepting branch is enough.',
+  ],
+  promotion: [
+    'Congratulations, Engineer. The Academy just updated your clearance — this is earned, not given.',
+    "That's a real promotion. Every requirement was met, no shortcuts. Wear it.",
+  ],
+  'certification-earned': [
+    'Certification logged. The Academy now trusts you with harder problems.',
+    "That's official now — you didn't just pass, you proved it.",
+  ],
+  'blueprint-unlocked': [
+    'New blueprint in your vault. Go take a look — you earned that one.',
+    'Schematics unlocked. Some of those took real mastery to reach.',
   ],
 };
 
