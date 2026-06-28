@@ -238,6 +238,9 @@ importers:
       '@arc/engine-progress':
         specifier: workspace:*
         version: link:../engine-progress
+      '@arc/engine-world':
+        specifier: workspace:*
+        version: link:../engine-world
       '@arc/plugin-sdk':
         specifier: workspace:*
         version: link:../plugin-sdk
