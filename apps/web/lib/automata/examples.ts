@@ -143,3 +143,55 @@ export function containsAaView(): NfaView {
     },
   };
 }
+
+/**
+ * Boss-tier NFA over {0,1} accepting strings that CONTAIN "101" as a substring.
+ * Built for the Quantum Research Lab's hardest determinization challenge: a formal
+ * ε-transition into the working start state, plus a genuine branch on every '1' (one
+ * thread keeps scanning for a fresh "101" attempt, the other commits to the guess this
+ * '1' begins one). Subset construction on this NFA reaches 7 distinct DFA states —
+ * meaningfully larger than `nfaEndsIn01View` (3) or `containsAaView` (4-5), which is
+ * exactly the point: a boss-sized powerset the player has to track by hand.
+ */
+export function containsSubstring101View(): NfaView {
+  const qS = stateId('qS');
+  const q0 = stateId('q0');
+  const q1 = stateId('q1');
+  const q2 = stateId('q2');
+  const q3 = stateId('q3');
+  const delta = new Map<StateId, Map<string, Set<StateId>>>([
+    [qS, new Map([[EPSILON, new Set([q0])]])],
+    [
+      q0,
+      new Map([
+        ['0', new Set([q0])],
+        ['1', new Set([q0, q1])], // branch: keep scanning, or guess "101" starts here
+      ]),
+    ],
+    [q1, new Map([['0', new Set([q2])]])], // no '1' transition — that guess dies on '1'
+    [q2, new Map([['1', new Set([q3])]])], // no '0' transition — that guess dies on '0'
+    [
+      q3,
+      new Map([
+        ['0', new Set([q3])],
+        ['1', new Set([q3])],
+      ]),
+    ],
+  ]);
+  return {
+    nfa: {
+      alphabet: ['0', '1'],
+      states: [qS, q0, q1, q2, q3],
+      start: qS,
+      accepting: new Set([q3]),
+      delta,
+    },
+    layout: {
+      qS: { x: -180, y: 150 },
+      q0: { x: 60, y: 150 },
+      q1: { x: 300, y: 0 },
+      q2: { x: 540, y: 0 },
+      q3: { x: 780, y: 150 },
+    },
+  };
+}

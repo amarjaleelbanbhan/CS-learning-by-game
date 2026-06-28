@@ -72,6 +72,14 @@ export const DISTRICTS: readonly District[] = [
         xpReward: 180,
         dependsOn: ['toa.build.dfa-ends-01'],
       },
+      {
+        id: 'toa.design.nfa-determinize-01',
+        title: 'Collapse the Superposition',
+        kind: 'mission',
+        href: '/learn/nfa-determinize',
+        xpReward: 260,
+        dependsOn: ['toa.nfa-branching'],
+      },
     ],
   },
   {
@@ -87,7 +95,10 @@ export const DISTRICTS: readonly District[] = [
         kind: 'spectacle',
         href: '/learn/nfa-to-dfa',
         xpReward: 250,
-        dependsOn: ['toa.nfa-branching'],
+        // Earned, not given: this spectacle is the reward for hand-building the
+        // conversion yourself in "Collapse the Superposition" — matches that
+        // mission's own visualizationTrigger text in the curriculum database.
+        dependsOn: ['toa.design.nfa-determinize-01'],
       },
     ],
   },
