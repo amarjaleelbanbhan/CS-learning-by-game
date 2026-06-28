@@ -20,6 +20,7 @@ import {
   deleteEdge as deleteEdgeFromModel,
   deleteState as deleteStateFromModel,
   moveState,
+  renameState as renameStateInModel,
   setStart as setStartInModel,
   toggleAccepting as toggleAcceptingInModel,
   usedSymbolTargets,
@@ -40,6 +41,9 @@ export interface DfaBuilderCanvasProps {
   /** Hint targets — a gentle pulse on the indicated state/edge. */
   highlightStateId?: string | null;
   highlightEdgeId?: string | null;
+  /** Shows a rename input in the state panel — for missions where the player must
+   * label states themselves (e.g. subset names like "q0,q1" in NFA→DFA construction). */
+  allowRename?: boolean;
 }
 
 function Inner({
@@ -49,15 +53,21 @@ function Inner({
   height = 380,
   highlightStateId,
   highlightEdgeId,
+  allowRename = false,
 }: DfaBuilderCanvasProps) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const [pending, setPending] = useState<{ source: string; target: string } | null>(null);
+  const [renameDraft, setRenameDraft] = useState('');
+  const [renameError, setRenameError] = useState<string | null>(null);
 
   const addState = useCallback(() => {
     const next = addStateToModel(value);
+    const newId = next.states.at(-1)!.id;
     onChange(next);
-    setSelectedNodeId(next.states.at(-1)!.id);
+    setSelectedNodeId(newId);
+    setRenameDraft(newId);
+    setRenameError(null);
   }, [value, onChange]);
 
   const setStart = useCallback(
@@ -103,12 +113,26 @@ function Inner({
   const onNodeClick: NodeMouseHandler = useCallback((_, node) => {
     setSelectedNodeId(node.id);
     setSelectedEdgeId(null);
+    setRenameDraft(node.id);
+    setRenameError(null);
   }, []);
 
   const onPaneClick = useCallback(() => {
     setSelectedNodeId(null);
     setSelectedEdgeId(null);
   }, []);
+
+  const commitRename = useCallback(() => {
+    if (!selectedNodeId) return;
+    const { model: next, error } = renameStateInModel(value, selectedNodeId, renameDraft);
+    if (error) {
+      setRenameError(error);
+      return;
+    }
+    setRenameError(null);
+    onChange(next);
+    setSelectedNodeId(renameDraft.trim());
+  }, [selectedNodeId, renameDraft, value, onChange]);
 
   const onNodeDragStop = useCallback(
     (_: unknown, node: Node) => {
@@ -199,7 +223,31 @@ function Inner({
 
         {selectedState && (
           <div className="rounded-xl border border-arc-cyan/20 bg-void/50 p-3">
-            <div className="mb-2 font-mono text-xs text-arc-cyan">{selectedState.id}</div>
+            {allowRename ? (
+              <div className="mb-2">
+                <div className="flex gap-1">
+                  <input
+                    value={renameDraft}
+                    onChange={(e) => {
+                      setRenameDraft(e.target.value);
+                      setRenameError(null);
+                    }}
+                    onKeyDown={(e) => e.key === 'Enter' && commitRename()}
+                    spellCheck={false}
+                    className="w-full rounded-lg border border-ink-low/25 bg-void/60 px-2 py-1 font-mono text-xs text-ink-hi outline-none focus:border-arc-cyan/50"
+                  />
+                  <button
+                    onClick={commitRename}
+                    className="rounded-lg border border-arc-cyan/30 px-2 text-xs text-arc-cyan hover:bg-arc-cyan/10"
+                  >
+                    ✓
+                  </button>
+                </div>
+                {renameError && <p className="mt-1 text-[10px] text-reject">{renameError}</p>}
+              </div>
+            ) : (
+              <div className="mb-2 font-mono text-xs text-arc-cyan">{selectedState.id}</div>
+            )}
             <div className="flex flex-col gap-1.5">
               <button
                 onClick={() => setStart(selectedState.id)}
