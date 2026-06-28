@@ -20,6 +20,7 @@
   "dependencies": {
     "@arc/shared": "workspace:*",
     "@arc/plugin-sdk": "workspace:*",
-    "@arc/engine-game": "workspace:*"
+    "@arc/engine-game": "workspace:*",
+    "@arc/engine-progress": "workspace:*"
   }
 }
