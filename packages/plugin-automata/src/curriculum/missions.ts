@@ -302,7 +302,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
   },
   {
     id: 'toa.design.nfa-determinize-01',
-    status: 'designed',
+    status: 'live',
     versionScope: 'v1',
     world: 'Automata Academy',
     district: 'quantum-research-lab',
@@ -313,9 +313,9 @@ export const MISSIONS: readonly CurriculumMission[] = [
     objective:
       'Given a small ε-NFA, perform subset construction by hand: submit the DFA transition table, not just watch it animate.',
     victoryCondition:
-      'Submitted transition table matches the reachable-subsets table computed from the reference NFA.',
+      'Submitted DFA is language-equivalent to the reference — graded the same way every construction mission is, never by graph shape. A separate subset-construction analysis additionally checks the submission against the canonical reachable-subsets table and explains any structural slip (missing subset, wrong ε-closure, duplicate subset, ...) even when the language is still correct.',
     failureCondition:
-      'A reachable subset is missing from the table, or ε-closure was not applied before recording a subset.',
+      'The submitted DFA accepts a different language than the reference (a counterexample string is shown). The most common root causes: a reachable subset is missing entirely, or ε-closure was not applied before recording a subset.',
     hints: [
       'Before reading any input symbol — does ε-closure already merge the start state with anything else?',
       'A subset only needs to be listed once even if you reach it by two different paths — did you create a duplicate?',
@@ -330,6 +330,23 @@ export const MISSIONS: readonly CurriculumMission[] = [
     format: 'completion',
     originality:
       'Teaching-focused companion to the existing toa.nfa-to-dfa spectacle: that mission shows the algorithm running; this one requires the player to execute it.',
+    variations: [
+      {
+        tier: 'easy',
+        prompt: 'Practice: strings ending in "01" (3 reachable subsets).',
+        xpReward: 200,
+      },
+      {
+        tier: 'hard',
+        prompt: 'Challenge: strings containing "aa", with a real ε-transition to track.',
+        xpReward: 260,
+      },
+      {
+        tier: 'boss',
+        prompt: 'Boss: strings containing "101" — a 7-state powerset.',
+        xpReward: 340,
+      },
+    ],
   },
   {
     id: 'toa.design.dfa-minimization-01',

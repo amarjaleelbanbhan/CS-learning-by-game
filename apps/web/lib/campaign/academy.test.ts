@@ -32,6 +32,7 @@ describe('Academy campaign content', () => {
       'toa.dfa-ends-01',
       'toa.build.dfa-ends-01',
       'toa.nfa-branching',
+      'toa.design.nfa-determinize-01',
       'toa.nfa-to-dfa',
     ];
     for (const id of order) {
