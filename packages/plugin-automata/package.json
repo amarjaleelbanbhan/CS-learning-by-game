@@ -21,6 +21,7 @@
     "@arc/shared": "workspace:*",
     "@arc/plugin-sdk": "workspace:*",
     "@arc/engine-game": "workspace:*",
-    "@arc/engine-progress": "workspace:*"
+    "@arc/engine-progress": "workspace:*",
+    "@arc/engine-world": "workspace:*"
   }
 }
