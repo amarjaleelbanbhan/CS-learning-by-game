@@ -17,9 +17,7 @@ export interface WorldEventDefinition {
 
 export const DEFAULT_ROTATION_BUCKET_MS = 7 * 24 * 60 * 60 * 1000; // one academy "week"
 
-function flattenByWeight(
-  defs: readonly WorldEventDefinition[],
-): readonly WorldEventDefinition[] {
+function flattenByWeight(defs: readonly WorldEventDefinition[]): readonly WorldEventDefinition[] {
   const out: WorldEventDefinition[] = [];
   for (const def of defs) {
     const count = Math.max(1, Math.round(def.weight));

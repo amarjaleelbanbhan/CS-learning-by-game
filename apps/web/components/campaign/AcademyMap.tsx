@@ -1,11 +1,19 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { computeUnlocked } from '@arc/engine-game';
+import type { NpcDefinition } from '@arc/engine-world';
 import { useGameStore } from '@/components/state/gameStore';
+import { useWorldStore } from '@/components/state/worldStore';
 import { useHasMounted } from '@/components/hud/useHasMounted';
 import { Panel } from '@/components/ui/Panel';
+import { DepartmentBadge } from '@/components/world/DepartmentBadge';
+import { WorldEventBanner } from '@/components/world/WorldEventBanner';
+import { NpcChip } from '@/components/world/NpcChip';
+import { NpcDialogueModal } from '@/components/world/NpcDialogueModal';
+import { unlockedNpcsForDistrict } from '@/lib/world/world';
 import {
   DISTRICTS,
   districtEntryMissionId,
@@ -35,15 +43,22 @@ const KIND_LABEL: Record<CampaignMission['kind'], string> = {
 export function AcademyMap() {
   const mounted = useHasMounted();
   const completed = useGameStore((s) => s.completed);
+  const currentDistrictId = useWorldStore((s) => s.currentDistrictId);
+  const setCurrentDistrict = useWorldStore((s) => s.setCurrentDistrict);
   const completedIds = new Set(mounted ? Object.keys(completed).filter((k) => completed[k]) : []);
   const unlocked = computeUnlocked(toUnlockNodes(), completedIds);
+  const [activeNpc, setActiveNpc] = useState<NpcDefinition | null>(null);
 
   return (
     <div className="space-y-5">
+      {mounted && <WorldEventBanner />}
+
       {DISTRICTS.map((district, i) => {
         const entryId = districtEntryMissionId(district);
         const districtUnlocked = entryId !== null && unlocked.has(entryId);
         const accent = ACCENT_CLASSES[district.accent];
+        const isCurrentLocation = mounted && currentDistrictId === district.id;
+        const npcs = mounted ? unlockedNpcsForDistrict(district.id) : [];
 
         return (
           <motion.div
@@ -53,7 +68,9 @@ export function AcademyMap() {
             transition={{ delay: i * 0.06 }}
           >
             <Panel
-              className={`p-5 transition-shadow ${districtUnlocked ? accent.glow : 'opacity-60'}`}
+              className={`p-5 transition-shadow ${districtUnlocked ? accent.glow : 'opacity-60'} ${
+                isCurrentLocation ? 'ring-1 ring-arc-cyan/50' : ''
+              }`}
               glow={districtUnlocked}
             >
               <div className="mb-3 flex items-center justify-between">
@@ -64,8 +81,14 @@ export function AcademyMap() {
                       className={`font-display text-base font-semibold ${districtUnlocked ? 'text-ink-hi' : 'text-ink-low'}`}
                     >
                       {district.name}
+                      {isCurrentLocation && (
+                        <span className="ml-2 align-middle text-[10px] uppercase tracking-wider text-arc-cyan">
+                          ● You are here
+                        </span>
+                      )}
                     </div>
                     <div className="text-xs text-ink-low">{district.tagline}</div>
+                    <DepartmentBadge districtId={district.id} />
                   </div>
                 </div>
                 {!districtUnlocked && (
@@ -116,7 +139,11 @@ export function AcademyMap() {
                       </div>
                     );
                     return isUnlocked ? (
-                      <Link key={mission.id} href={mission.href}>
+                      <Link
+                        key={mission.id}
+                        href={mission.href}
+                        onClick={() => setCurrentDistrict(district.id)}
+                      >
                         {card}
                       </Link>
                     ) : (
@@ -125,10 +152,20 @@ export function AcademyMap() {
                   })}
                 </div>
               )}
+
+              {npcs.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-1.5 border-t border-ink-low/10 pt-3">
+                  {npcs.map((npc) => (
+                    <NpcChip key={npc.id} npc={npc} onClick={() => setActiveNpc(npc)} />
+                  ))}
+                </div>
+              )}
             </Panel>
           </motion.div>
         );
       })}
+
+      <NpcDialogueModal npc={activeNpc} onClose={() => setActiveNpc(null)} />
     </div>
   );
 }

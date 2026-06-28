@@ -10,6 +10,7 @@
  * effects — without extra re-renders.
  */
 import type { MentorMissionResult } from '@arc/engine-ai';
+import type { WorldEventDefinition } from '@arc/engine-world';
 import { useGameStore } from '@/components/state/gameStore';
 import { useCareerStore } from '@/components/state/careerStore';
 import { useMentorStore } from '@/components/state/mentorStore';
@@ -105,4 +106,13 @@ export function ariaDebrief(result: MentorMissionResult): void {
   const utterance = ariaRespond(inputs);
   speak(utterance.text);
   if (utterance.milestoneId) mentor.celebrate(utterance.milestoneId);
+}
+
+/**
+ * ARIA mentions a world event by name (presentational only — no new dialogue-selection
+ * logic, just the existing companion bubble with text built from the event's own real
+ * title/description). Called once per event by WorldSyncWatcher when it first rotates in.
+ */
+export function ariaMentionWorldEvent(event: WorldEventDefinition): void {
+  useCompanionStore.getState().say('world-event', `${event.title}. ${event.description}`);
 }

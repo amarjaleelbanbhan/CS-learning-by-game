@@ -11,14 +11,17 @@ import { ReputationPanel } from '@/components/career/ReputationPanel';
 import { CertificationsPanel } from '@/components/career/CertificationsPanel';
 import { BlueprintVault } from '@/components/career/BlueprintVault';
 import { StatisticsPanel } from '@/components/career/StatisticsPanel';
+import { LaboratoryView } from '@/components/career/LaboratoryView';
+import { unlockedDecorationIds } from '@/lib/world/world';
 
-type Tab = 'reputation' | 'certifications' | 'blueprints' | 'statistics';
+type Tab = 'reputation' | 'certifications' | 'blueprints' | 'statistics' | 'laboratory';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'reputation', label: 'Academy Records' },
   { id: 'certifications', label: 'Certification Archive' },
   { id: 'blueprints', label: 'Blueprint Vault' },
   { id: 'statistics', label: 'Mission Control' },
+  { id: 'laboratory', label: 'Laboratory' },
 ];
 
 export default function CareerPage() {
@@ -89,6 +92,12 @@ export default function CareerPage() {
       {tab === 'blueprints' && <BlueprintVault earned={careerState.earnedBlueprints} />}
       {tab === 'statistics' && (
         <StatisticsPanel statistics={snapshot.statistics} missionsCompleted={missionsCompleted} />
+      )}
+      {tab === 'laboratory' && (
+        <LaboratoryView
+          labTier={snapshot.labTier}
+          unlockedDecorationIds={unlockedDecorationIds()}
+        />
       )}
     </div>
   );

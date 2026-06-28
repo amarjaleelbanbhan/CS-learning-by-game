@@ -44,7 +44,9 @@ function isEligible(line: DialogueLine, ctx: DialogueSelectionContext): boolean 
 }
 
 function specificity(line: DialogueLine): number {
-  return (line.minRankOrder ?? 0) + (line.minRelationshipScore ?? 0) + (line.worldEventId ? 1000 : 0);
+  return (
+    (line.minRankOrder ?? 0) + (line.minRelationshipScore ?? 0) + (line.worldEventId ? 1000 : 0)
+  );
 }
 
 /** Every line the NPC could currently say, most specific first. */

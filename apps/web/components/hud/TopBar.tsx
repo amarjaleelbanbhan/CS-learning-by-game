@@ -39,10 +39,10 @@ export function TopBar() {
           </Link>
           <button
             onClick={toggleMuted}
-            aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+            aria-label={mounted && muted ? 'Unmute sound' : 'Mute sound'}
             className="grid h-8 w-8 place-items-center rounded-full border border-ink-low/25 text-ink-mid transition-colors hover:border-arc-cyan/40 hover:text-ink-hi"
           >
-            {muted ? '🔇' : '🔊'}
+            {mounted && muted ? '🔇' : '🔊'}
           </button>
           <div className="hidden items-center gap-2 rounded-full border border-arc-gold/30 bg-arc-gold/5 px-3 py-1.5 sm:flex">
             <span className="text-arc-gold">◈</span>
