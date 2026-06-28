@@ -47,7 +47,12 @@ function stats(overrides: Partial<PlayerStatistics> = {}): PlayerStatistics {
 
 function ctx(overrides: Partial<MentorContext> = {}): MentorContext {
   const base: MentorContext = {
-    player: { rankTitle: 'Cadet Engineer', rankOrder: 0, isFirstSession: false, daysSinceLastVisit: 0 },
+    player: {
+      rankTitle: 'Cadet Engineer',
+      rankOrder: 0,
+      isFirstSession: false,
+      daysSinceLastVisit: 0,
+    },
     statistics: stats(),
     career: {
       totalMissionsCompleted: 0,
@@ -311,7 +316,10 @@ describe('adaptive coaching', () => {
   });
 
   it('holds the chosen mode when auto-mode is off', () => {
-    const c = ctx({ preferences: { mode: 'minimal', autoMode: false }, session: { ...ctx().session, struggleLevel: 'stuck' } });
+    const c = ctx({
+      preferences: { mode: 'minimal', autoMode: false },
+      session: { ...ctx().session, struggleLevel: 'stuck' },
+    });
     expect(suggestMode(c)).toBe('minimal');
   });
 });
@@ -341,11 +349,27 @@ describe('milestone conversations', () => {
 describe('no hallucinated progress', () => {
   const contexts: MentorContext[] = [
     ctx(),
-    ctx({ player: { ...ctx().player, isFirstSession: true }, memory: { ...EMPTY_MEMORY, sessionCount: 0 } }),
+    ctx({
+      player: { ...ctx().player, isFirstSession: true },
+      memory: { ...EMPTY_MEMORY, sessionCount: 0 },
+    }),
     ctx({ player: { ...ctx().player, daysSinceLastVisit: 12 } }),
-    ctx({ career: { ...ctx().career, totalMissionsCompleted: 9 }, mastery: { masteredConceptLabels: [], favoriteTopicLabel: null, weakestTopicLabel: null } }),
+    ctx({
+      career: { ...ctx().career, totalMissionsCompleted: 9 },
+      mastery: { masteredConceptLabels: [], favoriteTopicLabel: null, weakestTopicLabel: null },
+    }),
     ctx({ statistics: stats({ totalMissions: 5, visualizationUsageRate: 0.9, currentStreak: 6 }) }),
-    ctx({ session: { ...ctx().session, lastResult: result({ hintsUsed: 3, attempts: 4, improvedReasoning: true, usedVisualization: true }) } }),
+    ctx({
+      session: {
+        ...ctx().session,
+        lastResult: result({
+          hintsUsed: 3,
+          attempts: 4,
+          improvedReasoning: true,
+          usedVisualization: true,
+        }),
+      },
+    }),
     ctx({ career: { ...ctx().career, recentPromotionRankTitle: 'Lead Engineer' } }),
   ];
 

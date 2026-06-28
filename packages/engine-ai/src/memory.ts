@@ -110,7 +110,11 @@ export function socraticStep(memory: MentorMemory, misconceptionId: string): num
 // Selectors — read-only queries the coaching layer uses to understand history.
 // ---------------------------------------------------------------------------
 
-export function recentEvents(memory: MentorMemory, type: MentorEventType, limit = 5): MentorEvent[] {
+export function recentEvents(
+  memory: MentorMemory,
+  type: MentorEventType,
+  limit = 5,
+): MentorEvent[] {
   const out: MentorEvent[] = [];
   for (let i = memory.events.length - 1; i >= 0 && out.length < limit; i -= 1) {
     if (memory.events[i]!.type === type) out.push(memory.events[i]!);

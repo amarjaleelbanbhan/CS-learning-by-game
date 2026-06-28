@@ -1,18 +1,20 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { gradeDfaConstruction, unlockedHintTier } from '@arc/engine-assessment';
 import { simulateDfa } from '@arc/engine-simulation';
 import { useGameStore } from '@/components/state/gameStore';
 import { useCompanionStore } from '@/components/companion/companionStore';
 import { playSfx } from '@/lib/fx/sound';
+import { ariaBrief, ariaDebrief } from '@/lib/companion/mentorActions';
 import { Panel } from '@/components/ui/Panel';
 import { HoloButton } from '@/components/ui/HoloButton';
 import { AutomatonGraph } from '@/components/viz/AutomatonGraph';
 import { SimulationControls } from '@/components/viz/SimulationControls';
 import { usePlayback } from '@/components/viz/usePlayback';
 import { DfaBuilderCanvas } from '@/components/viz/builder/DfaBuilderCanvas';
+import { useHasMounted } from '@/components/hud/useHasMounted';
 import {
   compileToDfa,
   emptyBuilderModel,
@@ -44,6 +46,21 @@ export function DfaConstructionMission() {
   const completeMission = useGameStore((s) => s.completeMission);
   const say = useCompanionStore((s) => s.say);
   const [celebrate, setCelebrate] = useState(false);
+
+  // Real telemetry for ARIA: when the mission started, and the highest hint tier the
+  // player chose to reveal. Both are genuine — never fabricated.
+  const startedAt = useRef(Date.now());
+  // Brief the mission once (story framing only — ARIA never explains the theory). Gated on
+  // useHasMounted so the run lands after the dev StrictMode double-invoke settles and after
+  // persisted state hydrates — otherwise the cleanup cancels the only scheduled briefing.
+  const mounted = useHasMounted();
+  const briefed = useRef(false);
+  useEffect(() => {
+    if (!mounted || briefed.current || completed) return;
+    briefed.current = true;
+    const t = setTimeout(() => ariaBrief(MISSION_ID), 600);
+    return () => clearTimeout(t);
+  }, [mounted, completed]);
 
   const refTrace = useMemo(
     () => simulateDfa(referenceDfa, counterexample || '101'),
@@ -100,11 +117,27 @@ export function DfaConstructionMission() {
 
     if (result.correct) {
       playSfx('reward');
-      say('mission-complete');
       if (!completed) {
         completeMission(MISSION_ID, question.xpReward, question.coinsReward);
         setCelebrate(true);
       }
+      // Grounded debrief from REAL telemetry: attempts, hints actually revealed, whether
+      // visualization was opened, time taken, and whether the player self-corrected. This
+      // also records the attempt so it flows into the player's statistics.
+      ariaDebrief({
+        missionId: MISSION_ID,
+        missionTitle: question.prompt,
+        conceptId: 'dfa-fundamentals',
+        correct: true,
+        hintsUsed: Math.max(0, revealedTier + 1),
+        attempts: failedAttempts + 1,
+        usedVisualization: revealedTier >= 4,
+        timeMs: Date.now() - startedAt.current,
+        // Self-correction: they failed at least once but solved it without unlocking the
+        // answer-level hints (tiers 4-5 reveal a working machine).
+        discoveredOwnMistake: failedAttempts > 0 && revealedTier < 4,
+        improvedReasoning: false,
+      });
     } else {
       playSfx('error');
       setCounterexample(result.counterexample);

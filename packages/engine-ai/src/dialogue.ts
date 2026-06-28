@@ -53,10 +53,7 @@ function greeting(ctx: MentorContext, mode: MentorContext['preferences']['mode']
     facts.push(`${ctx.career.totalMissionsCompleted} missions completed`);
     numbers.push(ctx.career.totalMissionsCompleted);
   } else {
-    core = pick(
-      ['Welcome back, Engineer.', 'Good to see you again, Engineer.'],
-      ctx.seed,
-    );
+    core = pick(['Welcome back, Engineer.', 'Good to see you again, Engineer.'], ctx.seed);
     facts.push('returning greeting');
   }
 
@@ -153,7 +150,8 @@ function nudge(
       facts.push('player is stuck — offer a smaller version');
       break;
     case 'repeated-misconception':
-      core = 'I’ve noticed the same slip more than once. Let’s name it directly so it stops costing you.';
+      core =
+        'I’ve noticed the same slip more than once. Let’s name it directly so it stops costing you.';
       facts.push('repeated misconception detected');
       break;
   }
