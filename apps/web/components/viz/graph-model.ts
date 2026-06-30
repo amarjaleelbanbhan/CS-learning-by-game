@@ -1,4 +1,5 @@
 import { EPSILON, type DFA, type NFA } from '@arc/engine-automata';
+import type { BuilderModel } from '@/lib/automata/builder-types';
 
 /** Renderer-neutral graph model. Both DFA and NFA adapt into this shape so a
  * single <GraphView> can draw any automaton (and future course graphs). */
@@ -79,4 +80,24 @@ export function nfaToGraphModel(nfa: NFA, layout: Layout): GraphModel {
     }
   }
   return { nodes, edges: mergeEdges(raw) };
+}
+
+/** Read-only render of an in-progress builder model — used by the replay viewer, which
+ * steps through a player's own edit history without going through DfaBuilderCanvas. */
+export function builderModelToGraphModel(model: BuilderModel): GraphModel {
+  const nodes: GraphNode[] = model.states.map((s) => ({
+    id: s.id,
+    label: displayLabel(s.id),
+    x: s.x,
+    y: s.y,
+    isStart: s.isStart,
+    isAccepting: s.isAccepting,
+  }));
+  const edges: GraphEdge[] = model.edges.map((e) => ({
+    id: e.id,
+    from: e.from,
+    to: e.to,
+    label: [...e.symbols].sort().join(', '),
+  }));
+  return { nodes, edges };
 }

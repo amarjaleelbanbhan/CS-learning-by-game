@@ -116,3 +116,28 @@ export function ariaDebrief(result: MentorMissionResult): void {
 export function ariaMentionWorldEvent(event: WorldEventDefinition): void {
   useCompanionStore.getState().say('world-event', `${event.title}. ${event.description}`);
 }
+
+/**
+ * Wires a wrong-attempt's diagnosed misconception into ARIA's existing Socratic
+ * intervention path (selectCoachingIntent already prioritizes
+ * 'misconception-intervention' whenever a misconception + non-'none' struggle level are
+ * present — this just supplies real ones from the mission's own mistake analysis,
+ * duplicating no logic). Records the mistake into memory so repeatedMistakes() and the
+ * Socratic ladder's anti-repeat both see it, then speaks ARIA's next ladder rung.
+ */
+export function ariaMisconceptionCheck(
+  misconceptionId: string,
+  struggleLevel: 'mild' | 'significant' | 'stuck',
+): void {
+  const mentor = useMentorStore.getState();
+  mentor.record({ type: 'mistake-made', at: Date.now(), refId: misconceptionId });
+
+  const inputs: MentorInputs = {
+    ...gatherBase(),
+    detectedMisconceptionId: misconceptionId,
+    struggleLevel,
+  };
+  const utterance = ariaRespondTo(inputs, 'misconception-intervention');
+  speak(utterance.text);
+  if (utterance.socratic) mentor.advance(utterance.socratic.misconceptionId);
+}

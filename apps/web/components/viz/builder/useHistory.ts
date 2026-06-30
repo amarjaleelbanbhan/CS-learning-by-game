@@ -21,6 +21,10 @@ export interface UseHistory<T> {
   canRedo: boolean;
   /** Replaces the value AND clears all history — used when switching difficulty tiers. */
   reset: (next: T) => void;
+  /** The full sequence of values that led to the current one, oldest first, current last —
+   * the player's actual edit path (not anything they later undid past). Reused as the
+   * source for "replay this attempt" rather than maintaining a separate action log. */
+  snapshots: readonly T[];
 }
 
 /** Thin React wrapper over the pure history.ts reducer functions. */
@@ -40,5 +44,6 @@ export function useHistory<T>(initial: T): UseHistory<T> {
     canUndo: canUndoHistory(state),
     canRedo: canRedoHistory(state),
     reset,
+    snapshots: [...state.past, state.present],
   };
 }

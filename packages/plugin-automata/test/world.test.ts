@@ -5,6 +5,7 @@ import {
   type DialogueSelectionContext,
 } from '@arc/engine-world';
 import { RANK_LADDER } from '../src/career/index.js';
+import { missionById } from '../src/curriculum/index.js';
 import {
   DEPARTMENT_PERSONALITIES,
   DIALOGUE_BANKS,
@@ -201,5 +202,28 @@ describe('world: laboratory decorations', () => {
   it('decoration ids are unique', () => {
     const ids = LAB_DECORATIONS.map((d) => d.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe('world: flagship NFA->DFA mission integration (PROMPT 08)', () => {
+  it("the flagship mission's district resolves to quantum-research-lab — apps/web's CareerSyncWatcher reads this same field (districtForMission) to award reputation on completion, with zero new watcher code required", () => {
+    const mission = missionById('toa.design.nfa-determinize-01');
+    expect(mission?.district).toBe('quantum-research-lab');
+  });
+
+  it('the NPCs thematically built for the Quantum Research Lab are unlocked early enough to be visible once a player reaches this mission', () => {
+    const kleene = npcById('professor-kleene')!;
+    const voss = npcById('quantum-scientist')!;
+    // toa.design.nfa-determinize-01 requires toa.nfa-branching first, which itself
+    // requires toa.build.dfa-ends-01 — by then a player has earned real rank order/RX,
+    // so Kleene (rank-gated) should already be unlockable.
+    expect(kleene.unlockCondition.minRankOrder ?? 0).toBeLessThanOrEqual(1);
+    expect(voss.locationId).toBe('quantum-research-lab');
+  });
+
+  it('the quantum-reactor-failure world event is wired to the same district as the mission', () => {
+    const event = worldEventById('quantum-reactor-failure')!;
+    const mission = missionById('toa.design.nfa-determinize-01')!;
+    expect(event.districtId).toBe(mission.district);
   });
 });
