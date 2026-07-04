@@ -15,6 +15,7 @@ import { SimulationControls } from '@/components/viz/SimulationControls';
 import { usePlayback } from '@/components/viz/usePlayback';
 import { DfaBuilderCanvas } from '@/components/viz/builder/DfaBuilderCanvas';
 import { useHasMounted } from '@/components/hud/useHasMounted';
+import { VictoryCrest } from '@/components/fx/VictoryCrest';
 import {
   compileToDfa,
   emptyBuilderModel,
@@ -291,7 +292,7 @@ export function DfaConstructionMission() {
               transition={{ type: 'spring', stiffness: 220, damping: 18 }}
               className="glass rounded-3xl border-accept/40 p-8 text-center shadow-accept"
             >
-              <div className="text-5xl">🛡️</div>
+              <VictoryCrest icon="shield" />
               <div className="mt-3 font-display text-2xl font-bold text-glow">
                 Perimeter Secured
               </div>

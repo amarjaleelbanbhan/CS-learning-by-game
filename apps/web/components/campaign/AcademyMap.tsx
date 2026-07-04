@@ -14,6 +14,7 @@ import { WorldEventBanner } from '@/components/world/WorldEventBanner';
 import { NpcChip } from '@/components/world/NpcChip';
 import { NpcDialogueModal } from '@/components/world/NpcDialogueModal';
 import { unlockedNpcsForDistrict } from '@/lib/world/world';
+import { playSfx } from '@/lib/fx/sound';
 import {
   DISTRICTS,
   districtEntryMissionId,
@@ -68,9 +69,11 @@ export function AcademyMap() {
             transition={{ delay: i * 0.06 }}
           >
             <Panel
-              className={`p-5 transition-shadow ${districtUnlocked ? accent.glow : 'opacity-60'} ${
-                isCurrentLocation ? 'ring-1 ring-arc-cyan/50' : ''
-              }`}
+              className={`p-5 transition-all duration-300 ${
+                districtUnlocked
+                  ? `${accent.glow}`
+                  : 'border-dashed border-ink-low/20 opacity-50 bg-[repeating-linear-gradient(-45deg,rgba(92,110,140,0.03)_0px,rgba(92,110,140,0.03)_8px,transparent_8px,transparent_16px)]'
+              } ${isCurrentLocation ? 'ring-2 ring-arc-cyan/40' : ''}`}
               glow={districtUnlocked}
             >
               <div className="mb-3 flex items-center justify-between">
@@ -92,14 +95,38 @@ export function AcademyMap() {
                   </div>
                 </div>
                 {!districtUnlocked && (
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-ink-low">
-                    🔒 Locked
+                  <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-ink-low">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-3.5 w-3.5"
+                    >
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Locked
                   </span>
                 )}
               </div>
 
               {district.missions.length === 0 ? (
-                <p className="font-mono text-xs text-ink-low">Coming soon.</p>
+                <div className="relative rounded-xl border border-dashed border-ink-low/20 bg-void/25 p-4 text-center select-none overflow-hidden">
+                  <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[repeating-linear-gradient(-45deg,#fff_0px,#fff_4px,transparent_4px,transparent_8px)]" />
+                  <div className="font-mono text-[9px] uppercase tracking-widest text-ink-low/40">
+                    SECTOR_UNAVAILABLE
+                  </div>
+                  <div className="mt-1.5 font-display text-xs font-semibold text-ink-low/75">
+                    Engineering construction in progress
+                  </div>
+                  <div className="mt-2 font-mono text-[8px] tracking-widest text-ink-low/30 animate-pulse">
+                    SYS_EST: TIER_V2_PROTOTYPE
+                  </div>
+                </div>
               ) : (
                 <div className="grid gap-2 sm:grid-cols-2">
                   {district.missions.map((mission) => {
@@ -123,12 +150,43 @@ export function AcademyMap() {
                           >
                             {KIND_LABEL[mission.kind]}
                           </span>
-                          {isComplete && <span className="text-accept">✓</span>}
-                          {!isUnlocked && <span className="text-ink-low">🔒</span>}
+                          {isComplete && (
+                            <span className="text-accept">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-4 w-4 drop-shadow-[0_0_4px_rgba(54,242,166,0.6)] animate-pulse"
+                              >
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            </span>
+                          )}
+                          {!isUnlocked && (
+                            <span className="text-ink-low/40">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-3.5 w-3.5"
+                              >
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                              </svg>
+                            </span>
+                          )}
                         </div>
                         <div
                           className={`mt-1.5 font-display text-sm font-medium ${
-                            isUnlocked ? 'text-ink-hi' : 'text-ink-low'
+                            isUnlocked ? 'text-ink-hi text-glow' : 'text-ink-low'
                           }`}
                         >
                           {mission.title}
@@ -142,7 +200,10 @@ export function AcademyMap() {
                       <Link
                         key={mission.id}
                         href={mission.href}
-                        onClick={() => setCurrentDistrict(district.id)}
+                        onClick={() => {
+                          playSfx('click');
+                          setCurrentDistrict(district.id);
+                        }}
                       >
                         {card}
                       </Link>

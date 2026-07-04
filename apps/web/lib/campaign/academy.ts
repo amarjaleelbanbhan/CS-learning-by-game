@@ -55,6 +55,14 @@ export const DISTRICTS: readonly District[] = [
         xpReward: 220,
         dependsOn: ['toa.dfa-ends-01'],
       },
+      {
+        id: 'toa.design.dfa-minimization-01',
+        title: 'Trim the Fat',
+        kind: 'mission',
+        href: '/learn/dfa-minimization',
+        xpReward: 240,
+        dependsOn: ['toa.build.dfa-ends-01'],
+      },
     ],
   },
   {
@@ -108,7 +116,16 @@ export const DISTRICTS: readonly District[] = [
     tagline: 'Pattern Construction',
     icon: '⚡',
     accent: 'cyan',
-    missions: [],
+    missions: [
+      {
+        id: 'toa.design.regex-construction-01',
+        title: 'Pattern Forge',
+        kind: 'mission',
+        href: '/learn/regex-forge',
+        xpReward: 200,
+        dependsOn: ['toa.nfa-branching'],
+      },
+    ],
   },
   {
     id: 'grammar-tower',

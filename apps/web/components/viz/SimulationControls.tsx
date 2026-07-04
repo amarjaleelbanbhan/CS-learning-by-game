@@ -9,20 +9,83 @@ export function SimulationControls<T>({ pb }: { pb: Playback<T> }) {
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <IconButton label="Restart" onClick={pb.restart}>
-          ⟲
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4.5 w-4.5"
+          >
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <polyline points="3 3 3 8 8 8" />
+          </svg>
         </IconButton>
         <IconButton label="Step back" onClick={pb.stepBack} disabled={pb.index === 0}>
-          ⏮
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4.5 w-4.5"
+          >
+            <polygon points="19 20 9 12 19 4 19 20" fill="currentColor" />
+            <line x1="5" y1="19" x2="5" y2="5" />
+          </svg>
         </IconButton>
         <button
           onClick={pb.toggle}
           aria-label={pb.isPlaying ? 'Pause' : 'Play'}
-          className="grid h-11 w-11 place-items-center rounded-full border border-arc-cyan/50 bg-arc-cyan/15 text-lg text-arc-cyan shadow-glow transition-all hover:bg-arc-cyan/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-arc-cyan/60"
+          className="grid h-11 w-11 place-items-center rounded-full border border-arc-cyan/50 bg-arc-cyan/15 text-arc-cyan shadow-glow transition-all hover:bg-arc-cyan/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-arc-cyan/60"
         >
-          {pb.isPlaying ? '⏸' : '▶'}
+          {pb.isPlaying ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4.5 w-4.5"
+            >
+              <rect x="6" y="4" width="4" height="16" fill="currentColor" />
+              <rect x="14" y="4" width="4" height="16" fill="currentColor" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4.5 w-4.5 ml-0.5"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" />
+            </svg>
+          )}
         </button>
         <IconButton label="Step forward" onClick={pb.stepForward} disabled={pb.atEnd}>
-          ⏭
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4.5 w-4.5"
+          >
+            <polygon points="5 4 15 12 5 20 5 4" fill="currentColor" />
+            <line x1="19" y1="5" x2="19" y2="19" />
+          </svg>
         </IconButton>
 
         <div className="ml-auto flex items-center gap-1 rounded-lg border border-ink-low/20 p-0.5">

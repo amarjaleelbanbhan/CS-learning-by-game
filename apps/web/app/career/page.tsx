@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { rankById } from '@arc/engine-progress';
 import { RANK_LADDER } from '@arc/plugin-automata';
 import { useGameStore } from '@/components/state/gameStore';
@@ -13,15 +14,16 @@ import { BlueprintVault } from '@/components/career/BlueprintVault';
 import { StatisticsPanel } from '@/components/career/StatisticsPanel';
 import { LaboratoryView } from '@/components/career/LaboratoryView';
 import { unlockedDecorationIds } from '@/lib/world/world';
+import { playSfx } from '@/lib/fx/sound';
 
 type Tab = 'reputation' | 'certifications' | 'blueprints' | 'statistics' | 'laboratory';
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'reputation', label: 'Academy Records' },
-  { id: 'certifications', label: 'Certification Archive' },
-  { id: 'blueprints', label: 'Blueprint Vault' },
-  { id: 'statistics', label: 'Mission Control' },
-  { id: 'laboratory', label: 'Laboratory' },
+const TABS: { id: Tab; label: string; code: string }[] = [
+  { id: 'reputation', label: 'Academy Records', code: 'REC-01' },
+  { id: 'certifications', label: 'Certification Archive', code: 'SEC-02' },
+  { id: 'blueprints', label: 'Blueprint Vault', code: 'BLP-03' },
+  { id: 'statistics', label: 'Mission Control', code: 'STA-04' },
+  { id: 'laboratory', label: 'Laboratory', code: 'LAB-05' },
 ];
 
 export default function CareerPage() {
@@ -70,19 +72,41 @@ export default function CareerPage() {
       )}
 
       <nav className="flex flex-wrap gap-2">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`rounded-lg border px-3.5 py-1.5 text-sm transition-colors ${
-              tab === t.id
-                ? 'border-arc-cyan/50 bg-arc-cyan/10 text-arc-cyan'
-                : 'border-ink-low/15 text-ink-mid hover:border-arc-cyan/30 hover:text-ink-hi'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+        {TABS.map((t) => {
+          const isActive = tab === t.id;
+          return (
+            <button
+              key={t.id}
+              onClick={() => {
+                playSfx('click');
+                setTab(t.id);
+              }}
+              className={`group relative rounded-lg border px-3.5 py-1.5 text-sm font-mono tracking-wider transition-all duration-300 ${
+                isActive
+                  ? 'border-arc-cyan/50 text-arc-cyan shadow-[0_0_12px_rgba(56,225,255,0.15)]'
+                  : 'border-ink-low/15 text-ink-mid hover:border-arc-cyan/30 hover:text-ink-hi'
+              }`}
+            >
+              {isActive && (
+                <motion.span
+                  layoutId="activeTabBackdrop"
+                  className="absolute inset-0 rounded-lg bg-arc-cyan/10"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                <span
+                  className={`text-[9px] opacity-60 ${
+                    isActive ? 'text-arc-cyan' : 'text-ink-low group-hover:text-arc-cyan/70'
+                  }`}
+                >
+                  [{t.code}]
+                </span>
+                <span>{t.label}</span>
+              </span>
+            </button>
+          );
+        })}
       </nav>
 
       {tab === 'reputation' && <ReputationPanel departments={snapshot.departments} />}

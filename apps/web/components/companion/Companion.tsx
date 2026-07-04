@@ -14,6 +14,7 @@ import { ariaIdle } from '@/lib/companion/mentorActions';
 export function Companion() {
   const mounted = useHasMounted();
   const { message, visible, dismiss } = useCompanionStore();
+  const isSpeaking = Boolean(message && visible);
 
   if (!mounted) return null;
 
@@ -53,19 +54,40 @@ export function Companion() {
         whileTap={{ scale: 0.92 }}
         className="relative grid h-14 w-14 place-items-center rounded-full border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-arc-violet/60"
         style={{
-          borderColor: 'rgba(155,107,255,0.5)',
+          borderColor: isSpeaking ? 'rgba(56,225,255,0.5)' : 'rgba(155,107,255,0.4)',
           background:
             'radial-gradient(circle at 35% 30%, rgba(155,107,255,0.35), rgba(11,18,32,0.9))',
-          boxShadow: '0 0 24px rgba(155,107,255,0.35), inset 0 0 12px rgba(155,107,255,0.25)',
+          boxShadow: isSpeaking
+            ? '0 0 32px rgba(56,225,255,0.45), inset 0 0 16px rgba(56,225,255,0.3)'
+            : '0 0 24px rgba(155,107,255,0.35), inset 0 0 12px rgba(155,107,255,0.25)',
+          transition: 'all 0.4s ease',
         }}
       >
-        <motion.span
-          className="h-4 w-4 rounded-full"
-          style={{ background: '#9B6BFF', boxShadow: '0 0 14px 4px rgba(155,107,255,0.8)' }}
-          animate={{ scale: [1, 1.25, 1] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+        {/* Holographic orbital rings */}
+        <motion.div
+          className="absolute inset-0 rounded-full border border-dashed border-arc-violet/30 pointer-events-none"
+          animate={{ rotate: 360 }}
+          transition={{ duration: isSpeaking ? 6 : 14, repeat: Infinity, ease: 'linear' }}
         />
-        <span className="absolute -bottom-1 -right-1 h-2.5 w-2.5 rounded-full bg-accept shadow-[0_0_6px_2px_rgba(54,242,166,0.7)]" />
+        <motion.div
+          className="absolute inset-[-4px] rounded-full border border-arc-cyan/20 pointer-events-none"
+          style={{ borderStyle: 'dotted', borderWidth: '1.5px' }}
+          animate={{ rotate: -360 }}
+          transition={{ duration: isSpeaking ? 8 : 20, repeat: Infinity, ease: 'linear' }}
+        />
+
+        <motion.span
+          className="h-4 w-4 rounded-full relative z-10"
+          style={{
+            background: isSpeaking ? '#38E1FF' : '#9B6BFF',
+            boxShadow: isSpeaking
+              ? '0 0 18px 6px rgba(56,225,255,0.85)'
+              : '0 0 14px 4px rgba(155,107,255,0.8)',
+          }}
+          animate={isSpeaking ? { scale: [1, 1.4, 1] } : { scale: [1, 1.25, 1] }}
+          transition={{ duration: isSpeaking ? 0.9 : 2.2, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <span className="absolute -bottom-1 -right-1 h-2.5 w-2.5 rounded-full bg-accept shadow-[0_0_6px_2px_rgba(54,242,166,0.7)] z-20" />
       </motion.button>
     </div>
   );

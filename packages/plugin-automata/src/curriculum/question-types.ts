@@ -23,7 +23,8 @@ export type QuestionTypeId =
   | 'ambiguity-proof'
   | 'grammar-simplification'
   | 'cnf-conversion'
-  | 'pda-construction';
+  | 'pda-construction'
+  | 'turing-machine-construction';
 
 export interface QuestionTypeMeta {
   readonly id: QuestionTypeId;
@@ -154,6 +155,13 @@ export const QUESTION_TYPES: readonly QuestionTypeMeta[] = [
     label: 'PDA Construction',
     description:
       'Construct a pushdown automaton that accepts a described (typically non-regular, context-free) language.',
+    autoGradable: false,
+  },
+  {
+    id: 'turing-machine-construction',
+    label: 'Turing Machine Construction',
+    description:
+      'Construct a Turing Machine that runs on a tape and performs computation or decides a language.',
     autoGradable: false,
   },
 ];

@@ -23,6 +23,44 @@ const DURATIONS: Record<Stage, number> = {
   doors: 900,
 };
 
+function TypewriterText({ text, delay }: { text: string; delay: number }) {
+  const [displayed, setDisplayed] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    const startTimeout = setTimeout(() => {
+      let idx = 0;
+      const interval = setInterval(() => {
+        if (!active) return;
+        setDisplayed((prev) => prev + text.charAt(idx));
+        idx++;
+        if (idx >= text.length) {
+          clearInterval(interval);
+        }
+      }, 25); // 25ms per character
+      return () => clearInterval(interval);
+    }, delay * 1000);
+
+    return () => {
+      active = false;
+      clearTimeout(startTimeout);
+    };
+  }, [text, delay]);
+
+  return (
+    <span>
+      {displayed}
+      {displayed.length < text.length && (
+        <motion.span
+          animate={{ opacity: [1, 0, 1] }}
+          transition={{ duration: 0.6, repeat: Infinity }}
+          className="ml-1 inline-block h-3.5 w-1.5 bg-arc-cyan align-middle"
+        />
+      )}
+    </span>
+  );
+}
+
 /**
  * The "first 30 seconds" cinematic. Plays once per browser (gated by
  * BootGate), is always skippable, and collapses to a near-instant fade for
@@ -53,9 +91,22 @@ export function BootSequence({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="fixed inset-0 z-[100] overflow-hidden bg-void">
+      {/* Immersive HUD Scanlines Grid Overlay */}
+      {stage !== 'doors' && (
+        <div className="pointer-events-none absolute inset-0 z-40 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.18)_50%),linear-gradient(90deg,rgba(56,225,255,0.03),rgba(155,107,255,0.02),rgba(56,225,255,0.03))] bg-[size:100%_4px,6px_100%] opacity-30" />
+      )}
+      {/* Immersive HUD Scanner Beam */}
+      {stage !== 'doors' && (
+        <motion.div
+          animate={{ y: ['-10%', '110%'] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+          className="pointer-events-none absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-arc-cyan/20 to-transparent z-40 shadow-[0_0_8px_rgba(56,225,255,0.3)]"
+        />
+      )}
+
       <button
         onClick={onDone}
-        className="absolute right-5 top-5 z-50 rounded-lg border border-ink-low/30 px-3 py-1.5 font-mono text-xs text-ink-mid transition-colors hover:border-arc-cyan/40 hover:text-ink-hi"
+        className="absolute right-5 top-5 z-50 rounded-lg border border-ink-low/30 px-3 py-1.5 font-mono text-xs text-ink-mid transition-all hover:border-arc-cyan/40 hover:text-ink-hi hover:shadow-glow"
       >
         Skip ▶
       </button>
@@ -95,7 +146,7 @@ export function BootSequence({ onDone }: { onDone: () => void }) {
             <motion.div
               key="log"
               exit={{ opacity: 0 }}
-              className="w-[min(90vw,520px)] space-y-2 font-mono text-sm text-arc-cyan/90"
+              className="w-[min(90vw,520px)] space-y-2.5 font-mono text-sm text-arc-cyan/90"
             >
               {LOG_LINES.map((line, i) => (
                 <motion.div
@@ -103,8 +154,10 @@ export function BootSequence({ onDone }: { onDone: () => void }) {
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.4 }}
+                  className="flex items-center gap-3"
                 >
-                  <span className="text-ink-low">{'>'}</span> {line}
+                  <span className="text-ink-low select-none">{'>'}</span>
+                  <TypewriterText text={line} delay={i * 0.45} />
                 </motion.div>
               ))}
             </motion.div>

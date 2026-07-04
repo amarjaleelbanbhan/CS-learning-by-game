@@ -113,7 +113,7 @@ describe('curriculum: mission database', () => {
     }
   });
 
-  it('preserves the 5 live mission ids exactly as used in apps/web/lib/campaign/academy.ts', () => {
+  it('preserves the 7 live mission ids exactly as used in apps/web/lib/campaign/academy.ts', () => {
     const liveIds = liveMissions().map((m) => m.id);
     expect(liveIds.sort()).toEqual(
       [
@@ -122,6 +122,8 @@ describe('curriculum: mission database', () => {
         'toa.nfa-branching',
         'toa.nfa-to-dfa',
         'toa.design.nfa-determinize-01',
+        'toa.design.regex-construction-01',
+        'toa.design.dfa-minimization-01',
       ].sort(),
     );
   });

@@ -73,10 +73,28 @@ export const BLUEPRINTS: readonly BlueprintDefinition[] = [
     unlockCondition: { minRankOrder: 5 },
   },
   {
+    id: 'bp-visualization-theme-cyberpunk',
+    title: 'Visualization Theme: Cyberpunk',
+    category: 'cosmetic',
+    unlockCondition: { minRankOrder: 2 },
+  },
+  {
     id: 'bp-academy-lore-fragment-1',
     title: 'Academy Lore Fragment I',
     category: 'lore',
     unlockCondition: { requiredCertifications: ['cert-automata-master'] },
+  },
+  {
+    id: 'bp-academy-lore-fragment-2',
+    title: 'Academy Lore Fragment II',
+    category: 'lore',
+    unlockCondition: { requiredCertifications: ['cert-automata-master'] },
+  },
+  {
+    id: 'bp-interactive-schematics',
+    title: 'Interactive System Schematics',
+    category: 'tool',
+    unlockCondition: { requiredCertifications: ['cert-compiler-researcher'] },
   },
   {
     id: 'bp-prototype-design-architect',

@@ -73,9 +73,18 @@ export function NfaToDfaLab() {
               single state — the nondeterminism dissolving in front of you.
             </p>
           </div>
-          <div className="rounded-xl border border-arc-cyan/20 bg-void/50 px-4 py-3 text-center">
-            <div className="font-mono text-2xl text-arc-cyan">{viz.dfa.states.length}</div>
-            <div className="text-[10px] uppercase tracking-wider text-ink-low">DFA states</div>
+          <div className="relative border border-arc-cyan/25 bg-void/60 px-5 py-3 text-center shadow-[0_0_12px_rgba(56,225,255,0.05)]">
+            <div className="absolute left-0 top-0 h-1.5 w-1.5 border-l-2 border-t-2 border-arc-cyan" />
+            <div className="absolute right-0 top-0 h-1.5 w-1.5 border-r-2 border-t-2 border-arc-cyan" />
+            <div className="absolute left-0 bottom-0 h-1.5 w-1.5 border-l-2 border-b-2 border-arc-cyan" />
+            <div className="absolute right-0 bottom-0 h-1.5 w-1.5 border-r-2 border-b-2 border-arc-cyan" />
+
+            <div className="font-mono text-2xl font-black text-arc-cyan text-glow tracking-wider">
+              {viz.dfa.states.length}
+            </div>
+            <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-ink-low">
+              DFA states
+            </div>
           </div>
         </div>
       </Panel>
@@ -118,14 +127,24 @@ export function NfaToDfaLab() {
         </Panel>
       </div>
 
-      <Panel className="p-4">
-        <div className="mb-3 flex min-h-[1.5rem] items-center gap-2">
+      <Panel className="p-4 relative overflow-hidden border-l-4 border-l-arc-cyan/80 bg-gradient-to-r from-arc-cyan/5 to-transparent">
+        {/* Glow pulsing effect when key advances */}
+        <motion.div
+          key={pb.index}
+          initial={{ opacity: 0.8, x: -6 }}
+          animate={{ opacity: 0, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-y-0 left-0 w-1.5 bg-white z-10"
+        />
+        <div className="mb-3 flex min-h-[1.5rem] items-center gap-2 relative z-10">
           <span className="rounded-md border border-arc-cyan/30 bg-arc-cyan/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-arc-cyan">
             Step {pb.index + 1}
           </span>
           <span className="font-mono text-sm text-ink-hi">{pb.frame?.label}</span>
         </div>
-        <SimulationControls pb={pb} />
+        <div className="relative z-10">
+          <SimulationControls pb={pb} />
+        </div>
       </Panel>
 
       <AnimatePresence>

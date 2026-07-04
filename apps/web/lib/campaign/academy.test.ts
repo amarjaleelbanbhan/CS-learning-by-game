@@ -31,9 +31,11 @@ describe('Academy campaign content', () => {
     const order = [
       'toa.dfa-ends-01',
       'toa.build.dfa-ends-01',
+      'toa.design.dfa-minimization-01',
       'toa.nfa-branching',
       'toa.design.nfa-determinize-01',
       'toa.nfa-to-dfa',
+      'toa.design.regex-construction-01',
     ];
     for (const id of order) {
       expect(computeUnlocked(nodes, completed).has(id)).toBe(true);

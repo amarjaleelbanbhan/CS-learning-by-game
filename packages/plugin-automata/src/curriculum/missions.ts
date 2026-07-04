@@ -184,7 +184,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
   // ------------------------------------------------------------ DESIGNED -----
   {
     id: 'toa.design.regex-construction-01',
-    status: 'designed',
+    status: 'live',
     versionScope: 'v1',
     world: 'Automata Academy',
     district: 'regex-workshop',
@@ -350,7 +350,7 @@ export const MISSIONS: readonly CurriculumMission[] = [
   },
   {
     id: 'toa.design.dfa-minimization-01',
-    status: 'designed',
+    status: 'live',
     versionScope: 'v1',
     world: 'Automata Academy',
     district: 'security-district',
@@ -881,6 +881,37 @@ export const MISSIONS: readonly CurriculumMission[] = [
     format: 'construction',
     originality:
       'Inspired by the PDA-construction exercise pattern confirmed live in Assignment_1 (Q14); language rewritten from scratch. NOTE: no PDA lecture deck exists anywhere in the source material — this mission is fully designed ahead of the underlying lecture content; see docs/curriculum-ingestion-report.md for the gap.',
+  },
+  {
+    id: 'toa.design.turing-binary-increment-01',
+    status: 'designed',
+    versionScope: 'v1',
+    world: 'Automata Academy',
+    district: 'stack-reactor',
+    difficulty: 5,
+    conceptId: 'turing-machines',
+    prerequisites: ['toa.design.pda-construction-01'],
+    title: 'The Turing Increment',
+    objective:
+      'Construct a 1-tape Turing Machine that takes a binary string representing a number N, increments it by 1, and halts.',
+    victoryCondition:
+      'The state machine correctly increments the binary numbers on the tape for all test runs.',
+    failureCondition:
+      'The tape content diverges from the expected incremented result or loops infinitely without halting.',
+    hints: [
+      'Where is the least significant bit located in the binary string? Move the tape head to the far right first!',
+      'Once at the rightmost character, scan left. If you see a 0, change it to 1 and halt. If you see a 1, change it to 0 and carry left.',
+      'What happens if you scan all the way left to the blank space and still have a carry? Write a 1 in the blank space and halt!',
+    ],
+    visualizationTrigger:
+      'Tape and state transition step visualization, showing tape cell changes in real time.',
+    xpReward: 400,
+    creditsReward: 120,
+    achievements: ['Tape Master'],
+    estimatedMinutes: 22,
+    questionType: 'turing-machine-construction',
+    format: 'interactive-builder',
+    originality: 'Original computational tape mission designed for Turing Machine study.',
   },
 ];
 

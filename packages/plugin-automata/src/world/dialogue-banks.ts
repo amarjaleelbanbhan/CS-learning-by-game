@@ -21,6 +21,11 @@ export const DIALOGUE_BANKS: Readonly<Record<string, readonly DialogueLine[]>> =
       minRankOrder: 6,
     },
     {
+      id: 'sc-pumping-dilemma',
+      text: "If a language is regular, Reyes, it has a pumping length. If it doesn't, it's breached.",
+      minRankOrder: 5,
+    },
+    {
       id: 'sc-incident',
       text: 'We have a Security Incident in progress — every automaton you can field helps.',
       worldEventId: 'security-incident',
@@ -85,6 +90,11 @@ export const DIALOGUE_BANKS: Readonly<Record<string, readonly DialogueLine[]>> =
       minRankOrder: 6,
     },
     {
+      id: 'turing-decidability',
+      text: 'Decidability is not a suggestion. It is a boundary. Make sure your tape behaves.',
+      minRankOrder: 5,
+    },
+    {
       id: 'turing-festival',
       text: 'The Research Festival is in full swing — the archive has never been busier.',
       worldEventId: 'research-festival',
@@ -105,6 +115,11 @@ export const DIALOGUE_BANKS: Readonly<Record<string, readonly DialogueLine[]>> =
     {
       id: 'osei-welcome',
       text: "Chief Engineer Osei. The Reactor doesn't forgive sloppy stacks — glad you're finally here.",
+    },
+    {
+      id: 'osei-optimize',
+      text: 'Keep the transition maps compact. Less states mean less latency. In the field, latency is death.',
+      minRelationshipScore: 50,
     },
     {
       id: 'osei-crisis',

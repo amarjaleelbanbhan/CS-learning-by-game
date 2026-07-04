@@ -20,11 +20,24 @@ export function ReactorCore({ size = 140, animate = true }: { size?: number; ani
           strokeWidth={2}
           strokeDasharray={2 * Math.PI * r}
           initial={animate ? { strokeDashoffset: 2 * Math.PI * r, opacity: 0 } : false}
-          animate={
-            animate ? { strokeDashoffset: 0, opacity: 0.8 - i * 0.15 } : { opacity: 0.8 - i * 0.15 }
-          }
-          transition={{ duration: 0.9, delay: i * 0.15, ease: 'easeOut' }}
-          style={{ filter: 'drop-shadow(0 0 6px rgba(56,225,255,0.7))' }}
+          animate={{
+            strokeDashoffset: 0,
+            opacity: 0.8 - i * 0.15,
+            rotate: i % 2 === 0 ? [0, 360] : [0, -360],
+          }}
+          transition={{
+            opacity: animate
+              ? { duration: 0.9, delay: i * 0.15, ease: 'easeOut' }
+              : { duration: 0 },
+            strokeDashoffset: animate
+              ? { duration: 0.9, delay: i * 0.15, ease: 'easeOut' }
+              : { duration: 0 },
+            rotate: { duration: 15 + i * 5, repeat: Infinity, ease: 'linear' },
+          }}
+          style={{
+            filter: 'drop-shadow(0 0 6px rgba(56,225,255,0.7))',
+            transformOrigin: 'center',
+          }}
         />
       ))}
       <motion.circle

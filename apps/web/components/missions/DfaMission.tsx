@@ -13,6 +13,7 @@ import { SimulationControls } from '@/components/viz/SimulationControls';
 import { Tape } from '@/components/viz/Tape';
 import { usePlayback } from '@/components/viz/usePlayback';
 import { endsIn01View } from '@/lib/automata/examples';
+import { VictoryCrest } from '@/components/fx/VictoryCrest';
 
 const MISSION_ID = 'toa.dfa-ends-01';
 const EXAMPLES = ['101', '0011', '100', '11101', '010'];
@@ -120,21 +121,31 @@ export function DfaMission() {
         <AnimatePresence>
           {showResult && (
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className={`mt-2 flex items-center gap-3 rounded-xl border px-4 py-3 ${
+              initial={{ opacity: 0, y: 8, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              className={`relative mt-2 overflow-hidden flex items-center gap-3 rounded-xl border-2 px-4 py-3 ${
                 accepted
-                  ? 'border-accept/50 bg-accept/10 text-accept shadow-accept'
-                  : 'border-reject/50 bg-reject/10 text-reject shadow-reject'
+                  ? 'border-accept/60 bg-accept/10 text-accept shadow-accept'
+                  : 'border-reject/60 bg-reject/10 text-reject shadow-reject animate-[pulse-ring_2s_infinite]'
               }`}
             >
-              <span className="text-xl">{accepted ? '✓' : '✕'}</span>
-              <div className="leading-tight">
-                <div className="font-display text-sm font-bold">
-                  {accepted ? 'ACCEPTED' : 'REJECTED'}
+              {accepted && (
+                <motion.div
+                  animate={{ y: ['-100%', '100%'] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                  className="pointer-events-none absolute inset-x-0 h-0.5 bg-accept/30 z-10"
+                />
+              )}
+              <span className="text-xl relative z-10 font-bold">{accepted ? '✓' : '✕'}</span>
+              <div className="leading-tight relative z-10">
+                <div className="font-display text-[10px] uppercase tracking-widest opacity-60">
+                  {accepted ? 'SYSTEM STATUS: CLEAR' : 'SYSTEM STATUS: FAIL'}
                 </div>
-                <div className="font-mono text-xs opacity-80">
+                <div className="font-display text-sm font-black tracking-wider text-glow">
+                  {accepted ? 'ACCESS CLEARANCE GRANTED' : 'ACCESS DENIED / PARSING ERROR'}
+                </div>
+                <div className="font-mono text-xs opacity-80 mt-0.5">
                   &quot;{runString || 'ε'}&quot;{' '}
                   {accepted ? 'ends in 01 — the machine halts in q2.' : 'does not end in 01.'}
                 </div>
@@ -229,7 +240,7 @@ export function DfaMission() {
               transition={{ type: 'spring', stiffness: 220, damping: 18 }}
               className="glass rounded-3xl border-accept/40 p-8 text-center shadow-accept"
             >
-              <div className="text-5xl">🎉</div>
+              <VictoryCrest icon="checkmark" />
               <div className="mt-3 font-display text-2xl font-bold text-glow">Mission Complete</div>
               <p className="mt-1 text-sm text-ink-mid">
                 +150 XP &nbsp;·&nbsp; <span className="text-arc-gold">+50 ◈</span>
