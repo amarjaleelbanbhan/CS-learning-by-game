@@ -1,4 +1,5 @@
 import { referencedWidgetIds, validateContentBlock, type ContentBlock } from './content.js';
+import { isGraded, validateTask, type Task } from './task.js';
 
 /**
  * Declarative lesson schema (FR-LESSON-1, FR-LESSON-2).
@@ -44,6 +45,11 @@ export interface LessonStage {
    * reading it is enough and advancing completes it.
    */
   readonly requiresCompletion?: boolean;
+  /**
+   * Graded interactions on this stage. A stage may hold several (predict, then construct),
+   * and a stage with `requiresCompletion` is satisfied when all of its graded tasks are.
+   */
+  readonly tasks?: readonly Task[];
 }
 
 export interface Lesson {
@@ -115,6 +121,24 @@ export function validateLesson(lesson: Lesson): string[] {
     if (stage.blocks.length === 0) errors.push(`${where}: must have at least one content block`);
     for (const [i, block] of stage.blocks.entries()) {
       errors.push(...validateContentBlock(block, `${where} block ${i}`));
+    }
+
+    const tasks = stage.tasks ?? [];
+    const taskIds = new Set<string>();
+    for (const task of tasks) {
+      if (taskIds.has(task.id)) errors.push(`${where}: duplicate task id "${task.id}"`);
+      taskIds.add(task.id);
+      errors.push(...validateTask(task, where));
+    }
+
+    // The anti-"watch a video" rule, enforced by the build rather than by review: a stage
+    // may only gate progress if the player can actually do something gradeable on it.
+    // A widget alone is not enough — the NFA→DFA lab had a widget and completed itself
+    // when the animation ended.
+    if (stage.requiresCompletion === true && tasks.length > 0 && !tasks.some(isGraded)) {
+      errors.push(
+        `${where}: requiresCompletion is set but every task is ungraded — passive stages cannot gate progress`,
+      );
     }
   }
 

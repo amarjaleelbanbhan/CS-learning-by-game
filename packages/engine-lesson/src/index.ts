@@ -24,6 +24,17 @@ export type {
 } from './content.js';
 export { CALLOUT_TONES, referencedWidgetIds, validateContentBlock } from './content.js';
 
+export type { TaskVerb, Task } from './task.js';
+export {
+  TASK_VERBS,
+  UNGRADED_VERBS,
+  VERB_XP_MULTIPLIER,
+  taskXp,
+  isGraded,
+  validateTask,
+  referencedGraderIds,
+} from './task.js';
+
 export type { StageKind, LessonStage, Lesson } from './lesson.js';
 export {
   STAGE_FLOW,
