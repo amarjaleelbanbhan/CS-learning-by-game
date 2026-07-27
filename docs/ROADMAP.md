@@ -4,7 +4,12 @@
 [`04-ROADMAP-RISK-TESTING.md`](./04-ROADMAP-RISK-TESTING.md) and does not change; this
 one is updated as work lands and is the single source of truth for "what is really done".
 
-Last audited: 2026-07-05 · Branch `main` · CI green (72/72 turbo targets)
+Last audited: 2026-07-27 · Branch `main` · **CI green on GitHub Actions** (build,
+typecheck, lint, boundaries, test, format — 72/72 turbo targets)
+
+> CI had never actually passed before this audit: `pnpm/action-setup` was hard-failing on
+> a duplicate version declaration, and once that was fixed, pnpm 11 rejected the pinned
+> Node 20. Every "green" claim prior to this was local-only.
 
 ---
 
@@ -80,6 +85,8 @@ from synced data or intentionally device-local (see "Known technical debt").
 
 ### P3 — Production readiness
 
+- [x] **CI actually runs.** Was failing at the setup step on every push; now green
+      across build, typecheck, lint, boundaries, test and format.
 - [ ] **E2E tests (Playwright).** No coverage of the critical journeys.
 - [ ] **a11y audit.** WCAG 2.1 AA is a stated requirement; never audited.
 - [ ] **Deployment.** No Vercel config, no monitoring, no error tracking.
