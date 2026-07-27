@@ -10,6 +10,7 @@ import { CareerSyncWatcher } from '@/components/state/CareerSyncWatcher';
 import { PromotionCeremony } from '@/components/state/PromotionCeremony';
 import { MentorWatcher } from '@/components/state/MentorWatcher';
 import { WorldSyncWatcher } from '@/components/state/WorldSyncWatcher';
+import { CloudSyncWatcher } from '@/components/state/CloudSyncWatcher';
 import { TimeOfDayOverlay } from '@/components/world/TimeOfDayOverlay';
 
 const display = Orbitron({
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PromotionCeremony />
         <MentorWatcher />
         <WorldSyncWatcher />
+        <CloudSyncWatcher />
         <BootGate />
       </body>
     </html>

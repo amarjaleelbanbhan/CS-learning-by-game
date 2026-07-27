@@ -5,6 +5,7 @@ import { levelFromXp, useGameStore } from '@/components/state/gameStore';
 import { useSoundMuted } from '@/lib/fx/sound';
 import { ArcRing } from './ArcRing';
 import { useHasMounted } from './useHasMounted';
+import { AuthButton } from '@/components/auth/AuthButton';
 
 export function TopBar() {
   const mounted = useHasMounted();
@@ -31,6 +32,7 @@ export function TopBar() {
         </Link>
 
         <div className="flex items-center gap-4">
+          <AuthButton />
           <Link
             href="/career"
             className="hidden text-xs uppercase tracking-wider text-ink-mid transition-all duration-300 hover:text-arc-cyan hover:text-glow sm:inline"
