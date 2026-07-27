@@ -87,7 +87,22 @@ from synced data or intentionally device-local (see "Known technical debt").
       through `LessonRunner` from declarative content, with its original builder embedded
       as the `dfa-construction` widget. Gained brief/intuition/summary/mistakes stages it
       never had; grading, hints, rewards and ARIA telemetry unchanged.
-- [ ] **Migrate the remaining 7 bespoke missions** to declarative content.
+- [x] **Unblock assessment throughput: the Grader pipeline.** Exactly one grader existed
+      (`gradeDfaConstruction`); 19 declared question types and 12 answer formats had no
+      implementation, and the regex mission graded inline in a React component. Now
+      `raw → normalize → validate → grade → Verdict` with 8 graders. `invalid` is a
+      distinct outcome from `incorrect`, so a typo no longer burns an attempt.
+- [x] **Generalized task model.** 12 closed verbs, XP weighted by agency. Two validation
+      rules make "no XP for watching" build-enforced: an ungraded verb cannot carry XP or
+      a grader, and a gated stage whose tasks are all ungraded is rejected.
+- [x] **Design bible.** `docs/05-GAME-DESIGN-BIBLE.md` — the golden rule, task taxonomy,
+      Chomsky-hierarchy world map, difficulty bands, assessment contract.
+- [ ] **Migrate the remaining 6 bespoke missions** to declarative content.
+- [ ] **Fix the passive NFA→DFA lab.** It pays 250 XP when its animation ends. Content of
+      that shape can no longer pass validation, but the bespoke component predates the
+      rule and still ships.
+- [ ] **Unify the two mission registries.** `plugin-automata/curriculum/missions.ts` (23)
+      and `apps/web/lib/campaign/academy.ts` (7) disagree.
 - [ ] **31 of 38 topics still unbuilt.** 17 are fully designed in the curriculum
       database (`status: 'designed'`) and need only UI; 14 are not yet specified.
       This is the bulk of remaining work and the gate on M6.
