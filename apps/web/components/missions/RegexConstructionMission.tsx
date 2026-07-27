@@ -12,6 +12,7 @@ import {
   type NFA,
 } from '@arc/engine-automata';
 import { useGameStore } from '@/components/state/gameStore';
+import { boostedRewards } from '@/lib/world/rewards';
 import { useCompanionStore } from '@/components/companion/companionStore';
 import { playSfx } from '@/lib/fx/sound';
 import { Panel } from '@/components/ui/Panel';
@@ -162,8 +163,11 @@ export function RegexConstructionMission() {
         if (!completed) {
           completeMission(
             MISSION_ID,
-            regexConstructionQuestion.xpReward,
-            regexConstructionQuestion.coinsReward,
+            ...boostedRewards(
+              MISSION_ID,
+              regexConstructionQuestion.xpReward,
+              regexConstructionQuestion.coinsReward,
+            ),
           );
           setCelebrate(true);
         }

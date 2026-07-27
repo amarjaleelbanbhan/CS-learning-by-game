@@ -23,6 +23,7 @@ import { simulateDfa } from '@arc/engine-simulation';
 import { HintPanel, HintTriggerButton } from './HintPanel';
 import { ariaBrief, ariaDebrief } from '@/lib/companion/mentorActions';
 import { dfaMinimizationQuestion, redundantDfaView } from '@/lib/questions/dfa-minimization';
+import { boostedRewards } from '@/lib/world/rewards';
 
 const MISSION_ID = dfaMinimizationQuestion.id;
 const VISUALIZATION_HINT_TIER = 5;
@@ -126,7 +127,10 @@ export function DfaMinimizationMission() {
     // Success!
     playSfx('reward');
     if (!completed) {
-      completeMission(MISSION_ID, question.xpReward, question.coinsReward);
+      completeMission(
+        MISSION_ID,
+        ...boostedRewards(MISSION_ID, question.xpReward, question.coinsReward),
+      );
       setCelebrate(true);
     }
     ariaDebrief({

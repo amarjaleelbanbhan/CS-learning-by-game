@@ -28,6 +28,7 @@ import { ReplayViewer } from './nfa-determinize/ReplayViewer';
 import { SubsetVizBlock } from './nfa-determinize/SubsetVizBlock';
 import { ariaBrief, ariaDebrief, ariaMisconceptionCheck } from '@/lib/companion/mentorActions';
 import type { SubsetMistakeKind } from '@arc/engine-assessment';
+import { boostedRewards } from '@/lib/world/rewards';
 
 /** Mistake kinds that specifically indicate the "subsets are chosen arbitrarily rather
  * than derived by reachability" misconception this mission targets — not every wrong
@@ -143,7 +144,10 @@ export function NfaDeterminizeMission() {
       playSfx('reward');
       const tierContent = NFA_TIERS[tier];
       if (!completed) {
-        completeMission(MISSION_ID, tierContent.xpReward, tierContent.coinsReward);
+        completeMission(
+          MISSION_ID,
+          ...boostedRewards(MISSION_ID, tierContent.xpReward, tierContent.coinsReward),
+        );
         setCelebrate(true);
       }
       claimOnce(

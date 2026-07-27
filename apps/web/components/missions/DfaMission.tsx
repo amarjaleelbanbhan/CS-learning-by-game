@@ -14,6 +14,7 @@ import { Tape } from '@/components/viz/Tape';
 import { usePlayback } from '@/components/viz/usePlayback';
 import { endsIn01View } from '@/lib/automata/examples';
 import { VictoryCrest } from '@/components/fx/VictoryCrest';
+import { boostedRewards } from '@/lib/world/rewards';
 
 const MISSION_ID = 'toa.dfa-ends-01';
 const EXAMPLES = ['101', '0011', '100', '11101', '010'];
@@ -49,7 +50,7 @@ export function DfaMission() {
   // Award the mission the first time an accepted string finishes animating.
   useEffect(() => {
     if (pb.atEnd && trace.outcome === 'accept' && runString.length > 0 && !completed) {
-      completeMission(MISSION_ID, 150, 50);
+      completeMission(MISSION_ID, ...boostedRewards(MISSION_ID, 150, 50));
       setCelebrate(true);
       playSfx('reward');
       say('mission-complete');

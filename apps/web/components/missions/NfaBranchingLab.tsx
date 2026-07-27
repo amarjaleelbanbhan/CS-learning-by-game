@@ -14,6 +14,7 @@ import { SimulationControls } from '@/components/viz/SimulationControls';
 import { Tape } from '@/components/viz/Tape';
 import { usePlayback } from '@/components/viz/usePlayback';
 import { containsAaView } from '@/lib/automata/examples';
+import { boostedRewards } from '@/lib/world/rewards';
 
 const MISSION_ID = 'toa.nfa-branching';
 const EXAMPLES = ['aab', 'aaab', 'aba', 'b', 'baaab'];
@@ -84,7 +85,7 @@ export function NfaBranchingLab() {
       say('nfa-accept');
       playSfx('reward');
       if (!completed) {
-        completeMission(MISSION_ID, 180, 60);
+        completeMission(MISSION_ID, ...boostedRewards(MISSION_ID, 180, 60));
         setCelebrate(true);
       }
     }

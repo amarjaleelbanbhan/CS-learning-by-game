@@ -24,6 +24,7 @@ import {
 } from '@/lib/automata/builder-types';
 import { dfaSecurityProtocol, referenceView } from '@/lib/questions/dfa-security-protocol';
 import { HintPanel, HintTriggerButton } from './HintPanel';
+import { boostedRewards } from '@/lib/world/rewards';
 
 const MISSION_ID = dfaSecurityProtocol.id;
 
@@ -119,7 +120,10 @@ export function DfaConstructionMission() {
     if (result.correct) {
       playSfx('reward');
       if (!completed) {
-        completeMission(MISSION_ID, question.xpReward, question.coinsReward);
+        completeMission(
+          MISSION_ID,
+          ...boostedRewards(MISSION_ID, question.xpReward, question.coinsReward),
+        );
         setCelebrate(true);
       }
       // Grounded debrief from REAL telemetry: attempts, hints actually revealed, whether

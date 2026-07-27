@@ -13,6 +13,7 @@ import { usePlayback } from '@/components/viz/usePlayback';
 import { displayLabel, nfaToGraphModel, type GraphModel } from '@/components/viz/graph-model';
 import { nfaEndsIn01View } from '@/lib/automata/examples';
 import { buildSubsetViz } from '@/lib/automata/subset-frames';
+import { boostedRewards } from '@/lib/world/rewards';
 
 const MISSION_ID = 'toa.nfa-to-dfa';
 
@@ -47,7 +48,7 @@ export function NfaToDfaLab() {
 
   useEffect(() => {
     if (pb.atEnd && !completed) {
-      completeMission(MISSION_ID, 250, 75);
+      completeMission(MISSION_ID, ...boostedRewards(MISSION_ID, 250, 75));
       setCelebrate(true);
       playSfx('reward');
       say('flagship-complete');

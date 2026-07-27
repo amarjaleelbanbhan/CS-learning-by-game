@@ -113,5 +113,3 @@ from synced data or intentionally device-local (see "Known technical debt").
   works offline by design, but the optional language-enhancement path (and its
   server-side proxy, rate limits, and caching — Phase 7 DoD) does not exist.
 - **`mentorStore` / `worldStore` are localStorage-only.** Their Supabase tables exist.
-- **Rewards are not multiplied by the active world event.** `rewardMultiplier` is
-  displayed to the player but never applied to the XP/EC actually granted.
