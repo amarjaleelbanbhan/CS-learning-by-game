@@ -13,13 +13,11 @@
   },
   "dependencies": {
     "@arc/design-system": "workspace:*",
-    "@arc/engine-animation": "workspace:*",
-    "@supabase/ssr": "^0.5.2",
-    "@supabase/supabase-js": "^2.45.4",
-    "@arc/engine-assessment": "workspace:*",
-    "@arc/engine-automata": "workspace:*",
     "@arc/engine-ai": "workspace:*",
     "@arc/engine-analytics": "workspace:*",
+    "@arc/engine-animation": "workspace:*",
+    "@arc/engine-assessment": "workspace:*",
+    "@arc/engine-automata": "workspace:*",
     "@arc/engine-core": "workspace:*",
     "@arc/engine-game": "workspace:*",
     "@arc/engine-progress": "workspace:*",
@@ -27,8 +25,10 @@
     "@arc/engine-world": "workspace:*",
     "@arc/plugin-automata": "workspace:*",
     "@arc/shared": "workspace:*",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.45.4",
     "framer-motion": "^11.11.0",
-    "next": "^14.2.15",
+    "next": "^15.5.22",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "reactflow": "^11.11.4",
@@ -42,6 +42,6 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^3.2.7"
   }
 }
