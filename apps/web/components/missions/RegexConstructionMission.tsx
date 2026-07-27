@@ -7,12 +7,10 @@ import {
   areEquivalent,
   findDistinguishingString,
   parseRegex,
-  regexToNfa,
   subsetConstruction,
   thompson,
   type NFA,
 } from '@arc/engine-automata';
-import { unlockedHintTier } from '@arc/engine-assessment';
 import { useGameStore } from '@/components/state/gameStore';
 import { useCompanionStore } from '@/components/companion/companionStore';
 import { playSfx } from '@/lib/fx/sound';
@@ -60,7 +58,6 @@ export function RegexConstructionMission() {
   const [hintsOpen, setHintsOpen] = useState(false);
   const [counterexample, setCounterexample] = useState<string | null>(null);
   const [celebrate, setCelebrate] = useState(false);
-  const [showPreviewGraph, setShowPreviewGraph] = useState(true);
 
   const completed = useGameStore((s) => Boolean(s.completed[MISSION_ID]));
   const completeMission = useGameStore((s) => s.completeMission);
@@ -182,7 +179,9 @@ export function RegexConstructionMission() {
           correct: true,
           hintsUsed: Math.max(0, revealedTier + 1),
           attempts: failedAttempts + 1,
-          usedVisualization: revealedTier >= VISUALIZATION_HINT_TIER || showPreviewGraph,
+          // The Thompson NFA preview is always on in this mission, so visualization was
+          // genuinely used regardless of hint tier — reported honestly, never assumed false.
+          usedVisualization: true,
           timeMs: Date.now() - startedAt.current,
           discoveredOwnMistake: failedAttempts > 0 && revealedTier < VISUALIZATION_HINT_TIER,
           improvedReasoning: false,
@@ -198,8 +197,6 @@ export function RegexConstructionMission() {
       setGradeError(e instanceof Error ? e.message : 'An error occurred during grading.');
     }
   }
-
-  const unlocked = unlockedHintTier(failedAttempts);
 
   return (
     <div className="space-y-5">
@@ -328,7 +325,7 @@ export function RegexConstructionMission() {
           </Panel>
 
           {/* Real-time Compiler Graph Preview */}
-          {showPreviewGraph && nfaModel && (
+          {nfaModel && (
             <Panel className="p-4 relative">
               <div className="mb-2 flex items-center justify-between">
                 <h3 className="font-display text-xs uppercase tracking-widest text-ink-mid">

@@ -2,20 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  areEquivalent,
-  findDistinguishingString,
-  minimizeDfa,
-  type DFA,
-} from '@arc/engine-automata';
-import { unlockedHintTier } from '@arc/engine-assessment';
+import { areEquivalent, findDistinguishingString, minimizeDfa } from '@arc/engine-automata';
 import { useGameStore } from '@/components/state/gameStore';
 import { useCompanionStore } from '@/components/companion/companionStore';
 import { playSfx } from '@/lib/fx/sound';
 import { Panel } from '@/components/ui/Panel';
 import { HoloButton } from '@/components/ui/HoloButton';
 import { GraphView } from '@/components/viz/GraphView';
-import { nfaToGraphModel, dfaToGraphModel } from '@/components/viz/graph-model';
+import { dfaToGraphModel } from '@/components/viz/graph-model';
 import { DfaBuilderCanvas } from '@/components/viz/builder/DfaBuilderCanvas';
 import { useHasMounted } from '@/components/hud/useHasMounted';
 import { VictoryCrest } from '@/components/fx/VictoryCrest';

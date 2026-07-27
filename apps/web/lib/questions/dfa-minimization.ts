@@ -1,5 +1,5 @@
 import type { Question } from '@arc/engine-assessment';
-import { stateId } from '@arc/shared';
+import { stateId, type StateId } from '@arc/shared';
 import type { DFA } from '@arc/engine-automata';
 import type { Layout } from '@/components/viz/graph-model';
 
@@ -14,7 +14,7 @@ export function redundantDfaView(): DfaView {
   const start = stateId('q0');
   const accepting = new Set(['q4', 'q5', 'q6'].map(stateId));
 
-  const delta = new Map<any, Map<string, any>>();
+  const delta = new Map<StateId, Map<string, StateId>>();
   delta.set(
     stateId('q0'),
     new Map([
