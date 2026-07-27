@@ -14,7 +14,7 @@ Last audited: 2026-07-05 · Branch `main` · CI green (72/72 turbo targets)
 | ----- | ------------------------ | -------------- | ----------------------------------------------------------- |
 | 1     | Requirements & specs     | ✅ Complete    | `docs/00`–`04` written and stable.                          |
 | 2     | System architecture      | ✅ Complete    | pnpm+Turbo monorepo, `plugin-sdk` frozen, boundaries in CI. |
-| 3     | Foundations              | 🟡 Partial     | Engines + schema + RLS done. **Auth not implemented.**      |
+| 3     | Foundations              | ✅ Complete    | Engines, schema, RLS, and auth all working.                 |
 | 4     | Design system            | 🟡 Partial     | Tokens + primitives shipped. No Storybook, no a11y audit.   |
 | 5     | Viz + animation          | ✅ Complete    | GraphView, traces, scrubber, deterministic replay.          |
 | 6     | Lesson + game engines    | 🟡 Partial     | Game/progress engines done. **`engine-lesson` is a stub.**  |
@@ -42,10 +42,13 @@ Legend: ✅ complete · 🟡 partial · 🔴 not started
 
 ## Now: the critical path to a real product
 
-The single largest gap is that **the backend is dead code**. Six migrations define
-`profiles`, `career_progress`, `mentor_state`, `world_state` and more — all with RLS —
-but nothing in the app reads or writes any of them. The platform is currently a
-polished _offline single-player game_ with a phantom backend attached.
+The backend is no longer dead code: sign-in works and `profiles` / `mission_progress`
+now sync. The remaining gaps, in order, are **content** (31 of 38 topics unbuilt) and
+**production readiness** (no deployment, no E2E, no a11y audit).
+
+Four of the six migrations are still unused, by deliberate design rather than oversight:
+`career_progress`, `mentor_state` and `world_state` hold state that is either derived
+from synced data or intentionally device-local (see "Known technical debt").
 
 ### P0 — Identity & persistence (FR-AUTH-1/2/3 are MUST)
 
@@ -65,8 +68,9 @@ polished _offline single-player game_ with a phantom backend attached.
 - [x] **Dependency vulnerabilities.** All 20 advisories cleared: next 14→15.5.22,
       vitest 2→3.2.7, vite 5→6.4.3, esbuild 0.21→0.25.12. The Next upgrade also
       fixed a hard local blocker (`next start` crashed under Node 24).
-- [ ] **RLS verification test.** Policies exist and advisors are clean, but nothing
-      proves a signed-in user cannot read another user's row.
+- [x] **RLS migration lint.** Every table must have RLS enabled and an auth.uid()-scoped
+      policy; blanket `using (true)` is rejected on user-owned tables. Runs offline in CI
+      and is mutation-tested (removing a policy fails it).
 
 ### P2 — Content (the actual product value)
 
