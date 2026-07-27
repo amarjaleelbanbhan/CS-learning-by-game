@@ -14,6 +14,7 @@ import 'reactflow/dist/style.css';
 import { StateNode, type StateNodeData } from './StateNode';
 import { AutomataEdge } from './AutomataEdge';
 import type { GraphModel } from './graph-model';
+import { AutomatonTextAlternative } from './AutomatonTextAlternative';
 
 const nodeTypes = { state: StateNode };
 const edgeTypes = { automata: AutomataEdge };
@@ -71,8 +72,11 @@ function Inner({ model, activeNodes = [], activeEdgeKey = null, height = 340 }: 
   return (
     <div
       style={{ height }}
-      className="overflow-hidden rounded-xl border border-arc-cyan/10 bg-void/40"
+      className="relative overflow-hidden rounded-xl border border-arc-cyan/10 bg-void/40"
     >
+      {/* NFR-A11Y-4: the canvas conveys nothing to assistive tech, so the same automaton
+          is also exposed as a real transition table in the accessibility tree. */}
+      <AutomatonTextAlternative model={model} />
       <ReactFlow
         nodes={nodes}
         edges={edges}

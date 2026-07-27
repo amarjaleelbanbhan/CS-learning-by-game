@@ -11,10 +11,16 @@ import { useCallback, useState } from 'react';
 export type SfxKind = 'click' | 'success' | 'error' | 'levelup' | 'reward' | 'boot';
 
 let ctx: AudioContext | null = null;
-let muted = false;
+
+/**
+ * Muted by default (NFR-A11Y-3). A first-time visitor must never be sounded at
+ * unprompted — only an explicit "0" written by the toggle turns audio on, so an absent
+ * key means silence rather than noise.
+ */
+let muted = true;
 
 if (typeof window !== 'undefined') {
-  muted = window.localStorage.getItem('arc-reactor-muted') === '1';
+  muted = window.localStorage.getItem('arc-reactor-muted') !== '0';
 }
 
 export function isMuted(): boolean {

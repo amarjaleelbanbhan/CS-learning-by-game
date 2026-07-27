@@ -88,7 +88,13 @@ from synced data or intentionally device-local (see "Known technical debt").
 - [x] **CI actually runs.** Was failing at the setup step on every push; now green
       across build, typecheck, lint, boundaries, test and format.
 - [ ] **E2E tests (Playwright).** No coverage of the critical journeys.
-- [ ] **a11y audit.** WCAG 2.1 AA is a stated requirement; never audited.
+- [x] **a11y audit against NFR-A11Y-1..4.** Two real violations found and fixed:
+      sound defaulted to ON (NFR-A11Y-3 requires muted-by-default), and automaton
+      graphs were entirely invisible to assistive tech (NFR-A11Y-4). Every graph now
+      renders a screen-reader transition table via `GraphView`, so the fix covers all
+      current and future automata at once.
+- [ ] **Automated a11y checks (axe) in CI.** The audit above was manual; nothing
+      prevents a regression. Needs jsdom + Testing Library, which are not set up.
 - [ ] **Deployment.** No Vercel config, no monitoring, no error tracking.
 - [ ] **Perf budgets in CI.** LCP/TTI/bundle budgets specified, never enforced.
 
