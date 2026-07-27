@@ -47,23 +47,24 @@ The single largest gap is that **the backend is dead code**. Six migrations defi
 but nothing in the app reads or writes any of them. The platform is currently a
 polished _offline single-player game_ with a phantom backend attached.
 
-### P0 — Identity & persistence (FR-AUTH-1/2/3 are MUST, all unimplemented)
+### P0 — Identity & persistence (FR-AUTH-1/2/3 are MUST)
 
-- [ ] **Session middleware.** `lib/supabase/server.ts` documents "session refresh is
-      handled by middleware" — but no `middleware.ts` exists. Cookie-based sessions
-      cannot refresh without it.
-- [ ] **Magic-link sign-in + `/auth/callback`.** Satisfies FR-AUTH-1 without storing a
-      single password. (Google OAuth deferred: needs dashboard config outside the repo.)
-- [ ] **Cloud progress sync + guest migration (FR-AUTH-3).** Local stores stay the
-      source of truth (offline-first is a hard requirement); the cloud is a mirror.
-      Signing in migrates existing guest progress up rather than discarding it.
+- [x] **Session middleware.** `middleware.ts` refreshes the Supabase session via
+      `getUser()` (only `getUser()` revalidates and rotates the token).
+- [x] **Magic-link sign-in + `/auth/callback`.** FR-AUTH-1 satisfied without storing a
+      single password. Callback constrains redirects to same-origin relative paths.
+      (Google OAuth deferred: needs dashboard config outside the repo.)
+- [x] **Cloud progress sync + guest migration (FR-AUTH-3).** Monotonic merge
+      (max XP/coins, union of completions), so guest migration is free and no
+      timestamps/vector clocks are needed. Local stays the source of truth.
 - [ ] **Profile surface (FR-AUTH-2).** Display name / avatar on the Engineer Console.
+      The `profiles` row exists and syncs, but nothing renders or edits it yet.
 
 ### P1 — Security & supply chain
 
-- [ ] **Dependency vulnerabilities.** VeriPatch: 1 critical (`vitest` 2.1.9), 6 high
-      (`next` 14.2.35, `vite` 5.4.21), 11 medium. All fixes are major-version bumps —
-      needs an exposure assessment before upgrading, not a blind `npm audit fix`.
+- [x] **Dependency vulnerabilities.** All 20 advisories cleared: next 14→15.5.22,
+      vitest 2→3.2.7, vite 5→6.4.3, esbuild 0.21→0.25.12. The Next upgrade also
+      fixed a hard local blocker (`next start` crashed under Node 24).
 - [ ] **RLS verification test.** Policies exist and advisors are clean, but nothing
       proves a signed-in user cannot read another user's row.
 
