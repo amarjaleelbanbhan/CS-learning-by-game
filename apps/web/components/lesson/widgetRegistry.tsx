@@ -3,6 +3,7 @@
 import type { ComponentType } from 'react';
 import type { JsonValue } from '@arc/engine-lesson';
 import { DfaConstructionMission } from '@/components/missions/DfaConstructionMission';
+import { DfaMission } from '@/components/missions/DfaMission';
 
 /**
  * Widget registry — the bridge between declarative content and real interactivity
@@ -36,6 +37,7 @@ export type LessonWidget = ComponentType<LessonWidgetProps>;
  */
 export const WIDGET_REGISTRY: Readonly<Record<string, LessonWidget>> = {
   'dfa-construction': ({ onComplete }) => <DfaConstructionMission onSolved={onComplete} />,
+  'dfa-simulation': ({ onComplete }) => <DfaMission onSolved={onComplete} />,
 };
 
 export function widgetIds(): readonly string[] {

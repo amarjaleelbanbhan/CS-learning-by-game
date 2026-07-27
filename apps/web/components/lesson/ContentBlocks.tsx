@@ -52,7 +52,7 @@ function BlockView({
       return (
         <p
           role="math"
-          aria-label={block.latex}
+          aria-label={block.alt}
           className={`font-mono text-arc-cyan ${block.display ? 'my-2 text-center text-base' : 'text-sm'}`}
         >
           {block.latex}

@@ -1,4 +1,5 @@
 import type { Lesson } from '@arc/engine-lesson';
+import { calibrationLesson } from './calibration.js';
 import { perimeterSecurityLesson } from './perimeter-security.js';
 
 /**
@@ -7,7 +8,8 @@ import { perimeterSecurityLesson } from './perimeter-security.js';
  * Adding a topic means adding a file here and listing it below — no engine change and no
  * new React component, provided its interactivity is covered by an existing widget.
  */
-export const LESSONS: readonly Lesson[] = [perimeterSecurityLesson];
+/** Ordered by campaign prerequisite, so the list reads as the player's path. */
+export const LESSONS: readonly Lesson[] = [calibrationLesson, perimeterSecurityLesson];
 
 export function lessonById(id: string): Lesson | undefined {
   return LESSONS.find((l) => l.id === id);
@@ -18,4 +20,4 @@ export function lessonForMission(missionId: string): Lesson | undefined {
   return LESSONS.find((l) => l.missionId === missionId);
 }
 
-export { perimeterSecurityLesson };
+export { calibrationLesson, perimeterSecurityLesson };

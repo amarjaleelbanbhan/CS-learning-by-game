@@ -19,7 +19,7 @@ import { boostedRewards } from '@/lib/world/rewards';
 const MISSION_ID = 'toa.dfa-ends-01';
 const EXAMPLES = ['101', '0011', '100', '11101', '010'];
 
-export function DfaMission() {
+export function DfaMission({ onSolved }: { onSolved?: () => void } = {}) {
   const view = useMemo(endsIn01View, []);
   const dfa = view.dfa;
 
@@ -47,14 +47,20 @@ export function DfaMission() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trace]);
 
+  // Held in a ref so the host can pass an inline callback without re-triggering the
+  // award effect on every render.
+  const onSolvedRef = useRef(onSolved);
+  onSolvedRef.current = onSolved;
+
   // Award the mission the first time an accepted string finishes animating.
   useEffect(() => {
-    if (pb.atEnd && trace.outcome === 'accept' && runString.length > 0 && !completed) {
-      completeMission(MISSION_ID, ...boostedRewards(MISSION_ID, 150, 50));
-      setCelebrate(true);
-      playSfx('reward');
-      say('mission-complete');
-    }
+    if (!pb.atEnd || trace.outcome !== 'accept' || runString.length === 0) return;
+    onSolvedRef.current?.();
+    if (completed) return;
+    completeMission(MISSION_ID, ...boostedRewards(MISSION_ID, 150, 50));
+    setCelebrate(true);
+    playSfx('reward');
+    say('mission-complete');
   }, [pb.atEnd, trace.outcome, runString, completed, completeMission, say]);
 
   const showResult = hasRun && pb.index === pb.total - 1;
@@ -156,21 +162,11 @@ export function DfaMission() {
         </AnimatePresence>
       </Panel>
 
-      {/* Mission brief + controls */}
+      {/* Controls. The narrative brief and objective live in the lesson content that hosts
+          this widget, so they are deliberately not repeated here. */}
       <div className="flex flex-col gap-5">
         <Panel className="p-5">
-          <div className="mb-1 font-display text-[11px] uppercase tracking-[0.3em] text-arc-cyan/80">
-            Mission 01
-          </div>
-          <h1 className="font-display text-2xl font-bold text-glow">The Memory of a Machine</h1>
-          <p className="mt-3 text-sm leading-relaxed text-ink-mid">
-            A DFA can only <span className="text-ink-hi">remember</span> which state it&apos;s in —
-            nothing else. To accept strings ending in{' '}
-            <span className="font-mono text-arc-cyan">01</span>, it just needs to track the last one
-            or two symbols. Feed it a string and watch it think.
-          </p>
-
-          <div className="mt-5">
+          <div>
             <label className="mb-1 block font-display text-xs uppercase tracking-wider text-ink-low">
               Test a string
             </label>
@@ -200,27 +196,6 @@ export function DfaMission() {
                 </button>
               ))}
             </div>
-          </div>
-        </Panel>
-
-        <Panel className="p-5">
-          <div className="font-display text-xs uppercase tracking-wider text-ink-low">
-            Objective
-          </div>
-          <div className="mt-2 flex items-start gap-3">
-            <span
-              className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border text-xs ${
-                completed
-                  ? 'border-accept bg-accept/20 text-accept'
-                  : 'border-ink-low/40 text-ink-low'
-              }`}
-            >
-              {completed ? '✓' : ''}
-            </span>
-            <p className="text-sm text-ink-mid">
-              Run a string that the machine <span className="text-accept">accepts</span> to complete
-              the mission and earn <span className="text-arc-gold">150 XP</span>.
-            </p>
           </div>
         </Panel>
       </div>

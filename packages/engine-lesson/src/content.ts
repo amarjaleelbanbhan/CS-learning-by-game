@@ -40,6 +40,11 @@ export interface CalloutBlock {
 export interface MathBlock {
   readonly kind: 'math';
   readonly latex: string;
+  /**
+   * How the formula should be SPOKEN. Required, because a screen reader given raw LaTeX
+   * reads "backslash delta backslash times" — technically labelled, actually useless.
+   */
+  readonly alt: string;
   readonly display?: boolean;
 }
 
@@ -89,6 +94,7 @@ export function validateContentBlock(block: ContentBlock, where: string): string
       break;
     case 'math':
       nonEmpty(block.latex, 'math latex');
+      nonEmpty(block.alt, 'math alt text');
       break;
     case 'list':
       if (block.items.length === 0) errors.push(`${where}: list must have at least one item`);

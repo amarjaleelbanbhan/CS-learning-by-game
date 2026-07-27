@@ -106,15 +106,20 @@ describe('validateContentBlock', () => {
 
   it('rejects empty prose, math and list items', () => {
     expect(validateContentBlock({ kind: 'prose', text: '  ' }, 'p')).toHaveLength(1);
-    expect(validateContentBlock({ kind: 'math', latex: '' }, 'm')).toHaveLength(1);
+    expect(validateContentBlock({ kind: 'math', latex: '', alt: 'spoken' }, 'm')).toHaveLength(1);
     expect(validateContentBlock({ kind: 'list', items: [] }, 'l')).toHaveLength(1);
+  });
+
+  it('rejects a formula with no spoken form', () => {
+    // Raw LaTeX read aloud is gibberish, so alt is required rather than advisory.
+    expect(validateContentBlock({ kind: 'math', latex: '\\delta', alt: ' ' }, 'm')).toHaveLength(1);
   });
 
   it('accepts valid blocks of every kind', () => {
     const blocks: ContentBlock[] = [
       { kind: 'prose', text: 'ok' },
       { kind: 'callout', tone: 'warning', text: 'careful' },
-      { kind: 'math', latex: 'q_0', display: true },
+      { kind: 'math', latex: 'q_0', alt: 'q sub zero', display: true },
       { kind: 'list', ordered: true, items: ['one'] },
       { kind: 'widget', widgetId: 'w', alt: 'described' },
     ];

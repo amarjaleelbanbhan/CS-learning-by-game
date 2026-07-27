@@ -1,5 +1,6 @@
-import { DfaMission } from '@/components/missions/DfaMission';
+import { calibrationLesson } from '@arc/plugin-automata';
+import { LessonRunner } from '@/components/lesson/LessonRunner';
 
 export default function DfaEnds01Page() {
-  return <DfaMission />;
+  return <LessonRunner lesson={calibrationLesson} />;
 }
