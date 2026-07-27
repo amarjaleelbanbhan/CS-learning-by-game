@@ -20,6 +20,7 @@
     "@arc/engine-automata": "workspace:*",
     "@arc/engine-core": "workspace:*",
     "@arc/engine-game": "workspace:*",
+    "@arc/engine-lesson": "workspace:*",
     "@arc/engine-progress": "workspace:*",
     "@arc/engine-simulation": "workspace:*",
     "@arc/engine-world": "workspace:*",

@@ -22,7 +22,7 @@ typecheck, lint, boundaries, test, format — 72/72 turbo targets)
 | 3     | Foundations              | ✅ Complete    | Engines, schema, RLS, and auth all working.                 |
 | 4     | Design system            | 🟡 Partial     | Tokens + primitives shipped. No Storybook, no a11y audit.   |
 | 5     | Viz + animation          | ✅ Complete    | GraphView, traces, scrubber, deterministic replay.          |
-| 6     | Lesson + game engines    | 🟡 Partial     | Game/progress engines done. **`engine-lesson` is a stub.**  |
+| 6     | Lesson + game engines    | 🟡 Partial     | Lesson engine now real; 1 of 8 missions migrated.           |
 | 7     | AI Tutor                 | 🟡 Partial     | Deterministic mentor done. **No LLM client, no proxy.**     |
 | 8     | Assessment + practice    | ✅ Complete    | Equivalence grading, hint ladder, mistake analysis.         |
 | 9     | TOA modules (38 topics)  | 🔴 Early       | **7 of 38 topics live**; 17 more designed, not built.       |
@@ -79,6 +79,15 @@ from synced data or intentionally device-local (see "Known technical debt").
 
 ### P2 — Content (the actual product value)
 
+- [x] **Unblock content throughput: build the real lesson engine.** `engine-lesson` was a
+      Phase-2 stub, which is why every topic cost a bespoke React component and why
+      FR-LESSON-1's 15-stage flow existed nowhere. Lessons are now declarative data,
+      validated in CI, with interactivity referenced by widget id.
+- [x] **Reference migration.** Perimeter Security (`toa.build.dfa-ends-01`) now renders
+      through `LessonRunner` from declarative content, with its original builder embedded
+      as the `dfa-construction` widget. Gained brief/intuition/summary/mistakes stages it
+      never had; grading, hints, rewards and ARIA telemetry unchanged.
+- [ ] **Migrate the remaining 7 bespoke missions** to declarative content.
 - [ ] **31 of 38 topics still unbuilt.** 17 are fully designed in the curriculum
       database (`status: 'designed'`) and need only UI; 14 are not yet specified.
       This is the bulk of remaining work and the gate on M6.
@@ -116,10 +125,18 @@ from synced data or intentionally device-local (see "Known technical debt").
 
 ## Known technical debt
 
-- **`engine-lesson` is still a Phase-2 stub.** Missions are hand-built React components
-  rather than declarative data. `docs/02-ARCHITECTURE.md` treats lesson content as
-  `jsonb` data validated in CI; that architecture is not yet realised. Every new mission
-  therefore costs a bespoke component. This is the main reason Phase 9 is slow.
+- **7 of 8 missions are still bespoke React components.** `engine-lesson` is now real and
+  one mission (Perimeter Security) is migrated as the reference; the rest still need
+  content authored. Migration is additive — a bespoke mission becomes a registered
+  _widget_ referenced from declarative content, so no working interactive code is
+  rewritten or thrown away.
+- **The DFA builder canvas has no screen-reader alternative.** `GraphView` (read-only
+  automata) got one; `DfaBuilderCanvas` (the editable canvas) did not, so the
+  construction missions remain partly inaccessible. Pre-existing, not a regression.
+- **Lesson content lives in typed TS, not `missions.content jsonb`.** It is validated in
+  CI and is JSON-serialisable by construction, so moving it into the column later is a
+  data move rather than a rewrite. Author-in-DB is not needed while content ships with
+  the app.
 - **`engine-visualization-model` and `viz` are stubs.** Layout/geometry lives in
   `apps/web` instead, so it cannot be reused by another subject plugin.
 - **No LLM client is injected into `engine-ai`.** The mentor is fully deterministic and

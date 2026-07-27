@@ -28,7 +28,11 @@ import { boostedRewards } from '@/lib/world/rewards';
 
 const MISSION_ID = dfaSecurityProtocol.id;
 
-export function DfaConstructionMission() {
+/**
+ * `onSolved` lets this mission be embedded as a lesson widget: the LessonRunner needs to
+ * know the challenge stage is satisfied. Optional, so the standalone route is unaffected.
+ */
+export function DfaConstructionMission({ onSolved }: { onSolved?: () => void } = {}) {
   const question = dfaSecurityProtocol;
   const alphabet = question.payload.alphabet;
   const reference = useMemo(referenceView, []);
@@ -119,6 +123,9 @@ export function DfaConstructionMission() {
 
     if (result.correct) {
       playSfx('reward');
+      // Fires on every correct submission, not only the first: when embedded in a lesson
+      // the stage must unlock even if the mission's reward was already claimed earlier.
+      onSolved?.();
       if (!completed) {
         completeMission(
           MISSION_ID,

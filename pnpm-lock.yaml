@@ -71,6 +71,9 @@ importers:
       '@arc/engine-game':
         specifier: workspace:*
         version: link:../../packages/engine-game
+      '@arc/engine-lesson':
+        specifier: workspace:*
+        version: link:../../packages/engine-lesson
       '@arc/engine-progress':
         specifier: workspace:*
         version: link:../../packages/engine-progress
@@ -241,6 +244,9 @@ importers:
       '@arc/engine-game':
         specifier: workspace:*
         version: link:../engine-game
+      '@arc/engine-lesson':
+        specifier: workspace:*
+        version: link:../engine-lesson
       '@arc/engine-progress':
         specifier: workspace:*
         version: link:../engine-progress
