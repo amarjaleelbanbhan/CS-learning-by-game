@@ -22,7 +22,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # >= 22.13 is a hard floor: pnpm 11 refuses to run on anything older.
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies

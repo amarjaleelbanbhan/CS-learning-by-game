@@ -5,7 +5,7 @@
   "description": "Project ARC Reactor — AI-powered Theory of Automata learning engine.",
   "packageManager": "pnpm@11.9.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13"
   },
   "type": "module",
   "scripts": {

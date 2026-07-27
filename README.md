@@ -20,7 +20,7 @@ known technical debt — that file is the single source of truth for what is rea
 
 ## Quick start
 
-Requires **Node ≥ 20** and **pnpm 11**.
+Requires **Node ≥ 22.13** and **pnpm 11** (pnpm 11 refuses to run on older Node).
 
 ```bash
 pnpm install
