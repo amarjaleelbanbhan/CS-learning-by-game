@@ -1,5 +1,6 @@
-import { NfaToDfaLab } from '@/components/missions/NfaToDfaLab';
+import { subsetConstructionLesson } from '@arc/plugin-automata';
+import { LessonRunner } from '@/components/lesson/LessonRunner';
 
 export default function NfaToDfaPage() {
-  return <NfaToDfaLab />;
+  return <LessonRunner lesson={subsetConstructionLesson} />;
 }

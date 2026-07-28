@@ -427,3 +427,44 @@ describe('GraderRegistry', () => {
     expect(createDefaultRegistry().has('dfa-equivalence')).toBe(true);
   });
 });
+
+describe('assess is defensive about grader bugs', () => {
+  // Found by playtesting, not by unit tests: a spec missing a field the grader reads made
+  // `acceptsNFA(nfa, undefined)` throw inside a click handler. The player saw nothing
+  // happen at all — no verdict, no error, a dead button.
+  it('turns a thrown grader into an invalid verdict instead of propagating', () => {
+    const exploding: Grader<number, null> = {
+      id: 'exploding',
+      normalize: (raw) => (typeof raw === 'number' ? raw : null),
+      validate: () => [],
+      grade: () => {
+        throw new Error('spec.input is undefined');
+      },
+    };
+    const verdict = assess(exploding, 1, null);
+    expect(verdict.outcome).toBe('invalid');
+    expect(verdict.feedback.join(' ')).toMatch(/spec\.input is undefined/);
+  });
+
+  it('does not charge the player an attempt for our authoring bug', () => {
+    const exploding: Grader<number, null> = {
+      id: 'exploding2',
+      normalize: (raw) => (typeof raw === 'number' ? raw : null),
+      validate: () => [],
+      grade: () => {
+        throw new Error('boom');
+      },
+    };
+    expect(countsAsAttempt(assess(exploding, 1, null))).toBe(false);
+  });
+
+  it('grades membership only when the spec carries BOTH machine and input', () => {
+    // The exact shape the NFA→DFA prediction task needs: specRef supplies `machine`,
+    // task params supply `input`. Merging them is TaskRunner's job.
+    const machine = endsIn01();
+    expect(assess(membershipPredictionGrader, true, { machine, input: '101' }).outcome).toBe(
+      'correct',
+    );
+    expect(assess(membershipPredictionGrader, true, { machine } as never).outcome).toBe('invalid');
+  });
+});

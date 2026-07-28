@@ -4,6 +4,7 @@ import type { ComponentType } from 'react';
 import type { JsonValue } from '@arc/engine-lesson';
 import { DfaConstructionMission } from '@/components/missions/DfaConstructionMission';
 import { DfaMission } from '@/components/missions/DfaMission';
+import { NfaToDfaLab } from '@/components/missions/NfaToDfaLab';
 
 /**
  * Widget registry — the bridge between declarative content and real interactivity
@@ -38,6 +39,9 @@ export type LessonWidget = ComponentType<LessonWidgetProps>;
 export const WIDGET_REGISTRY: Readonly<Record<string, LessonWidget>> = {
   'dfa-construction': ({ onComplete }) => <DfaConstructionMission onSolved={onComplete} />,
   'dfa-simulation': ({ onComplete }) => <DfaMission onSolved={onComplete} />,
+  // Reveal-only: the lesson already paid for the prediction and the construction, so the
+  // animation must not also pay for being watched.
+  'subset-construction-reveal': () => <NfaToDfaLab awardOnEnd={false} />,
 };
 
 export function widgetIds(): readonly string[] {

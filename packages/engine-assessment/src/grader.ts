@@ -57,7 +57,22 @@ export function assess<TAnswer, TSpec>(
   }
   const problems = grader.validate(answer, spec);
   if (problems.length > 0) return invalid(problems, 'Finish the answer, then submit again.');
-  return grader.grade(answer, spec);
+
+  // A grader that throws is an authoring bug (usually a spec missing a field it reads).
+  // Without this the exception escapes into the click handler and the player sees
+  // NOTHING happen — no verdict, no error, a dead button. Failing loudly as an invalid
+  // verdict keeps the player informed and, crucially, does not charge them an attempt
+  // for our mistake.
+  try {
+    return grader.grade(answer, spec);
+  } catch (error) {
+    return invalid(
+      [
+        `This task could not be graded (${error instanceof Error ? error.message : 'unknown error'}).`,
+      ],
+      'This is a problem with the task, not with your answer.',
+    );
+  }
 }
 
 /**

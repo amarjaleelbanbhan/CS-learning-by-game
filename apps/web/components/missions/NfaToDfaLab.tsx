@@ -17,7 +17,15 @@ import { boostedRewards } from '@/lib/world/rewards';
 
 const MISSION_ID = 'toa.nfa-to-dfa';
 
-export function NfaToDfaLab() {
+/**
+ * The subset-construction spectacle.
+ *
+ * `awardOnEnd` exists because this component now has two lives. Standalone it is the old
+ * mission and still pays out; embedded in the NFA→DFA lesson as the `reveal` widget it
+ * must NOT, because that lesson pays for predicting and constructing instead. Watching an
+ * animation to its final frame is not an achievement.
+ */
+export function NfaToDfaLab({ awardOnEnd = true }: { awardOnEnd?: boolean } = {}) {
   const nfaView = useMemo(nfaEndsIn01View, []);
   const viz = useMemo(() => buildSubsetViz(nfaView.nfa), [nfaView]);
   const pb = usePlayback(viz.trace);
@@ -47,13 +55,13 @@ export function NfaToDfaLab() {
   const [celebrate, setCelebrate] = useState(false);
 
   useEffect(() => {
-    if (pb.atEnd && !completed) {
+    if (awardOnEnd && pb.atEnd && !completed) {
       completeMission(MISSION_ID, ...boostedRewards(MISSION_ID, 250, 75));
       setCelebrate(true);
       playSfx('reward');
       say('flagship-complete');
     }
-  }, [pb.atEnd, completed, completeMission, say]);
+  }, [awardOnEnd, pb.atEnd, completed, completeMission, say]);
 
   const dfaActiveNodes = frame
     ? [frame.currentDfaNode, ...(frame.resultDfaNode ? [frame.resultDfaNode] : [])]
